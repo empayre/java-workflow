@@ -1,0 +1,70 @@
+name: Maven Deploy Artifact
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'Java version'
+        required: false
+        default: "15"
+        type: string
+      java-distribution:
+        description: 'Java distribution'
+        required: false
+        default: "adopt"
+        type: string
+      mvn-args:
+        description: 'Additional maven args'
+        required: false
+        type: string
+    secrets:
+      github-token:
+        required: true
+      mm-webhook-url:
+        required: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Checkout GitHub Action JDK Build Repo
+        uses: actions/checkout@v2
+        with:
+          repository: empayre/action-jdk-build
+          ref: v1.0.17
+          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
+          path: .github/actions/action-jdk-build
+
+      - name: Checkout GitHub Action Deploy Docker Repo
+        uses: actions/checkout@v2
+        with:
+          repository: empayre/action-deploy-docker
+          ref: v2.0.0
+          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
+          path: .github/actions/action-deploy-docker
+
+      - name: Run Build Java
+        uses: ./.github/actions/action-jdk-build
+        with:
+          github-pat: '${{ secrets.GH_PACKAGES_RO_PAT }}'
+          github-user: 'vulnbe'
+
+      - name: Deploy image
+        uses: ./.github/actions/action-deploy-docker
+        with:
+          aws-ecr-access-key: ${{ secrets.ECR_ACCESS_KEY }}
+          aws-ecr-secret-key: ${{ secrets.ECR_SECRET_KEYS }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Mattermost Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_USERNAME: ${{ github.event.repository.name }}
+          SLACK_WEBHOOK: ${{ secrets.mm-webhook-url }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_LINK_NAMES: true
+          SLACK_FOOTER: ""
