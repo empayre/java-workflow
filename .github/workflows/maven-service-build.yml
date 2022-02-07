@@ -17,6 +17,13 @@ on:
         description: 'Additional maven args'
         required: false
         type: string
+    secrets:
+      action-fetch-token:
+        required: true
+      github-pkg-ro-pat:
+        required: true
+      github-pkg-ro-user:
+        required: true
 
 jobs:
   build:
@@ -30,11 +37,11 @@ jobs:
         with:
           repository: empayre/action-jdk-build
           ref: v1.0.17
-          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
+          token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
 
       - name: Run Build Java
         uses: ./.github/actions/action-jdk-build
         with:
-          github-pat: '${{ secrets.GH_PACKAGES_RO_PAT2 }}'
-          github-user: 'empayre-bot'
+          github-pat: ${{ secrets.github-pkg-ro-pat }}
+          github-user: ${{ secrets.github-pkg-ro-user }}
