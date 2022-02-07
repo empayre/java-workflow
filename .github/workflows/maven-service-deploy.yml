@@ -22,8 +22,6 @@ on:
         required: true
       action-fetch-token:
         required: true
-      github-token:
-        required: true
       github-pkg-ro-pat:
         required: true
       github-pkg-ro-user:
