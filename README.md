@@ -50,7 +50,7 @@ jobs:
       aws-region: ${{ secrets.AWS_REGION }}
 ```
 
-Пример сборки и деплоя библотеки patch-swag:
+Пример сборки и деплоя библотеки swag:
 
 `build.yml`
 ```yaml
@@ -65,8 +65,10 @@ jobs:
   build:
     uses: empayre/java-workflow/.github/workflows/maven-swag-build.yml@v1
     with: 
-      run-script-name: patch -- для случая сборки на основании патчей ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902))
+      run-script-name: patch * 
 ```
+\*  - для случая сборки на основе патчей ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902))
+
 `deploy.yml`
 ```yaml
 name: Maven Deploy Artifact
