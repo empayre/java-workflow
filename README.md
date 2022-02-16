@@ -64,7 +64,7 @@ on:
 jobs:
   build:
     uses: empayre/java-workflow/.github/workflows/maven-swag-build.yml@v1
-    inputs: 
+    with: 
       run-script-name: patch -- для случая сборки на основании патчей ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902))
 ```
 `deploy.yml`
