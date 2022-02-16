@@ -8,6 +8,16 @@ on:
         required: false
         default: "16"
         type: string
+    jdk-version:
+      description: 'Java version'
+      required: false
+      default: "15"
+      type: string
+    jdk-distribution:
+      description: 'Java distribution'
+      required: false
+      default: "adopt"
+      type: string
     secrets:
       github-token:
         required: true
@@ -51,6 +61,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: Setup Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ inputs.jdk-version }}
+          distribution: ${{ inputs.jdk-distribution }}
+
       - name: Cache build
         id: cache-build
         uses: actions/cache@v2
@@ -80,6 +96,12 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+
+      - name: Setup Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ inputs.jdk-version }}
+          distribution: ${{ inputs.jdk-distribution }}
 
       - name: Cache build
         id: cache-build
