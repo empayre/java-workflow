@@ -18,6 +18,11 @@ on:
       required: false
       default: "adopt"
       type: string
+    run-script-name:
+      description: ''
+      required: true
+      default: "build"
+      type: string
     secrets:
       github-token:
         required: true
@@ -41,7 +46,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Bundle specification
-        run: npm run patch
+        run: npm run ${{ inputs.run-script-name }}
 
       - name: Validate specification
         run: npm run validate

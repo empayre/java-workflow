@@ -3,7 +3,7 @@
 В репозитории хранятся общие описания для сборок java/kotlin проектов.
 Сборка наших проектов бывает разной, в зависимости от типа собираемого проекта:
 - Service - Maven сборка сервиса с деплоем docker image в AWS ECR
-- patch-swag - Maven сборка swagger на основании патчей ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902)) с деплоем в Apache Maven registry на Github Packages
+- swag - Maven сборка swagger  с деплоем в Apache Maven registry на Github Packages
 
 Чтобы начать использовать `java-workflow` в своем репозитории - добавьте в директорию `/.github/workflows/` файлы
 `build.yml` и `deploy.yml`, файлов описания workflow не обязательно должно быть два, вы можете самостоятельно описать workflow с использованием `java-workflow`.
@@ -63,7 +63,9 @@ on:
 
 jobs:
   build:
-    uses: empayre/java-workflow/.github/workflows/maven-patch-swag-build.yml@v1
+    uses: empayre/java-workflow/.github/workflows/maven-swag-build.yml@v1
+    inputs: 
+      run-script-name: patch -- для случая сборки на основании патчей ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902))
 ```
 `deploy.yml`
 ```yaml
@@ -77,7 +79,7 @@ on:
 
 jobs:
   deploy:
-    uses: empayre/java-workflow/.github/workflows/maven-patch-swag-deploy.yml@v1
+    uses: empayre/java-workflow/.github/workflows/maven-swag-deploy.yml@v1
     secrets:
       mm-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
 ```
