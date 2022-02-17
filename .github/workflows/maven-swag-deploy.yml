@@ -97,7 +97,7 @@ jobs:
         run: |
           mvn -X clean deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github-token }}
 
   deploy-client:
     runs-on: ubuntu-20.04
