@@ -35,6 +35,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -65,6 +67,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Setup Maven
         uses: actions/setup-java@v2
@@ -101,6 +105,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Setup Maven
         uses: actions/setup-java@v2
