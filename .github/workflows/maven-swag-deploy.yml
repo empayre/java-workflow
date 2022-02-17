@@ -8,21 +8,21 @@ on:
         required: false
         default: "16"
         type: string
-    jdk-version:
-      description: 'Java version'
-      required: false
-      default: "15"
-      type: string
-    jdk-distribution:
-      description: 'Java distribution'
-      required: false
-      default: "adopt"
-      type: string
-    run-script-name:
-      description: ''
-      required: true
-      default: "build"
-      type: string
+      jdk-version:
+        description: 'Java version'
+        required: false
+        default: "15"
+        type: string
+      jdk-distribution:
+        description: 'Java distribution'
+        required: false
+        default: "adopt"
+        type: string
+      run-script-name:
+        description: ''
+        required: true
+        default: "build"
+        type: string
     secrets:
       github-token:
         required: true
