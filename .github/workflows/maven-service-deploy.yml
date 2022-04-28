@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: empayre/action-deploy-docker
-          ref: v2.0.0
+          ref: v2.0.1
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-deploy-docker
 
@@ -68,6 +68,8 @@ jobs:
           aws-ecr-access-key: ${{ secrets.aws-ecr-access_key }}
           aws-ecr-secret-key: ${{ secrets.aws-ecr-secret-key }}
           aws-region: ${{ secrets.aws-region }}
+          context-path: "./target"
+          dockerfile-path: "./target/Dockerfile"
 
       - name: Mattermost Notification
         if: always()
