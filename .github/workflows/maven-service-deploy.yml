@@ -6,12 +6,12 @@ on:
       java-version:
         description: 'Java version'
         required: false
-        default: "17"
+        default: "15"
         type: string
       java-distribution:
         description: 'Java distribution'
         required: false
-        default: "temurin"
+        default: "adopt"
         type: string
       mvn-args:
         description: 'Additional maven args'
@@ -68,6 +68,8 @@ jobs:
           aws-ecr-access-key: ${{ secrets.aws-ecr-access_key }}
           aws-ecr-secret-key: ${{ secrets.aws-ecr-secret-key }}
           aws-region: ${{ secrets.aws-region }}
+          context-path: "./target"
+          dockerfile-path: "./target/Dockerfile"
 
       - name: Mattermost Notification
         if: always()
