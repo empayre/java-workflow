@@ -16,6 +16,7 @@ on:
       mvn-args:
         description: 'Additional maven args'
         required: false
+        default: "-DskipTests"
         type: string
     secrets:
       mm-webhook-url:
@@ -61,6 +62,7 @@ jobs:
         with:
           github-pat: ${{ secrets.github-pkg-ro-pat }}
           github-user: ${{ secrets.github-pkg-ro-user }}
+          mvn-args: ${{ inputs.mvn-args }}
 
       - name: Deploy image
         uses: ./.github/actions/action-deploy-docker
