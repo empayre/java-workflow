@@ -16,6 +16,7 @@ on:
       mvn-args:
         description: 'Additional maven args'
         required: false
+        default: "-DskipTests"
         type: string
     secrets:
       mm-webhook-url:
