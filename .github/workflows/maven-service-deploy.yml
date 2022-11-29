@@ -6,12 +6,12 @@ on:
       java-version:
         description: 'Java version'
         required: false
-        default: "15"
+        default: "17"
         type: string
       java-distribution:
         description: 'Java distribution'
         required: false
-        default: "adopt"
+        default: "temurin"
         type: string
       mvn-args:
         description: 'Additional maven args'
@@ -50,7 +50,7 @@ jobs:
           path: .github/actions/action-jdk-build
 
       - name: Checkout GitHub Action Deploy Docker Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: empayre/action-deploy-docker
           ref: v2.0.1
@@ -63,6 +63,8 @@ jobs:
           github-pat: ${{ secrets.github-pkg-ro-pat }}
           github-user: ${{ secrets.github-pkg-ro-user }}
           mvn-args: ${{ inputs.mvn-args }}
+          jdk-version: ${{ inputs.java-version }}
+          jdk-distribution: ${{ inputs.java-distribution }}
 
       - name: Deploy image
         uses: ./.github/actions/action-deploy-docker
