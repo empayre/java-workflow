@@ -53,16 +53,14 @@ jobs:
           echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
           echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
         id: commit_info
-      - name: Deploy package
-        uses: valitydev/action-deploy-jdk-package@v1.0.14
-        with:
-          jdk-version: ${{ inputs.java-version }}
-          java-distribution: ${{ inputs.java-distribution }}
-          server-username: ${{ secrets.server-username }}
-          server-password: ${{ secrets.server-password }}
-          deploy-secret-key: ${{ secrets.deploy-secret-key }}
-          deploy-secret-key-password: ${{ secrets.deploy-secret-key-password }}
-          maven-args: '-Dcommit.number=${{ steps.commit_info.outputs.COMMIT_NUMBER }} -Drevision="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }}"'
+      - name: Set artifact version
+        run: |
+          mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }"
+      - name: Deploy artifact
+        run: |
+          mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   notify:
     runs-on: ubuntu-20.04
     needs: [deploy]
