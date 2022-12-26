@@ -33,10 +33,13 @@ jobs:
         with:
           version: 1.11.0
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Running linter, checking breaking changes
+      - name: Running linter
         run: |
           buf lint
-          buf breaking --against "https://github.com/${{github.repository}}.git#branch=${{ github.base_ref }}"
+      - name: Checking breaking changes
+        uses: bufbuild/buf-breaking-action@v1
+        with:
+          against: 'https://github.com/${{github.repository}}.git#branch=${{ github.base_ref }}'
       - name: Compile
         run: >
           mvn --batch-mode clean compile -f pom.xml
