@@ -36,10 +36,9 @@ jobs:
         with:
           version: 1.11.0
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Running linter, checking breaking changes
+      - name: Running linter
         run: |
           buf lint
-          buf breaking --against "https://github.com/${{github.repository}}.git#branch=${{ github.base_ref }}"
       - name: Retrieve commit info
         run: |
           echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"

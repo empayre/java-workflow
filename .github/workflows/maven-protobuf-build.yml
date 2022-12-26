@@ -36,11 +36,6 @@ jobs:
       - name: Running linter
         run: |
           buf lint
-      - name: Checking breaking changes
-        uses: bufbuild/buf-breaking-action@v1
-        with:
-          input: 'src/main/proto'
-          against: 'https://github.com/${{github.repository}}.git#branch=${{ github.base_ref }}'
       - name: Compile
         run: >
           mvn --batch-mode clean compile -f pom.xml
