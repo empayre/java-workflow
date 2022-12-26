@@ -39,7 +39,7 @@ jobs:
       - name: Running linter, checking breaking changes
         run: |
           buf lint
-          buf breaking --against "${{github.repository}}.git#branch=${{ github.base_ref }}"
+          buf breaking --against "https://github.com/${{github.repository}}.git#branch=${{ github.base_ref }}"
       - name: Retrieve commit info
         run: |
           echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
