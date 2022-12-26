@@ -1,0 +1,41 @@
+name: Maven Build Artifact
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'Java version'
+        required: false
+        default: "17"
+        type: string
+      java-distribution:
+        description: 'Java distribution'
+        required: false
+        default: "temurin"
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.java-distribution }}
+          cache: 'maven'
+      - name: Set up buf action
+        uses: bufbuild/buf-setup-action@v1.11.0
+        with:
+          version: 1.11.0
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Running linter
+        run: |
+          buf lint
+      - name: Compile
+        run: >
+          mvn --batch-mode clean compile -f pom.xml
