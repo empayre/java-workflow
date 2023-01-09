@@ -46,7 +46,7 @@ jobs:
         id: commit_info
       - name: Set artifact version
         run: |
-          mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }"
+          mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }}"
       - name: Deploy artifact
         run: |
           mvn --batch-mode deploy
