@@ -48,3 +48,16 @@ jobs:
           mvn-args: ${{ inputs.mvn-args }}
           jdk-version: ${{ inputs.java-version }}
           jdk-distribution: ${{ inputs.java-distribution }}
+
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v3
+        with:
+          fail-on-severity: critical
+          vulnerability-check: true
+          comment-summary-in-pr: true
