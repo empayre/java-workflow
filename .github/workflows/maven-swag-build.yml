@@ -55,7 +55,29 @@ jobs:
         run: npm run validate
 
       - name: Build server jar
-        run: mvn --batch-mode clean package -f pom.xml -P="server"
+        run: mvn --batch-mode clean package site -f pom.xml -P="server"
 
       - name: Build client jar
-        run: mvn --batch-mode clean package -f pom.xml -P="client"
+        run: mvn --batch-mode clean package site -f pom.xml -P="client"
+        
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: bom.json
+          path: 'target/bom.json'
+  scan:
+    name: Vuln Scan with Trivy
+    needs: bundle
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Trivy CLI
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.39.1/trivy_0.39.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.39.1_Linux-64bit.deb
+      - uses: actions/download-artifact@v3
+        with:
+          name: bom.json
+      - name: Run Trivy with SBOM
+        run: trivy sbom --exit-code 1 --severity CRITICAL,HIGH ./bom.json
