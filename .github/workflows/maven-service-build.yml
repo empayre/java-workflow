@@ -35,8 +35,7 @@ jobs:
       - name: Checkout GitHub Action JDK Build Repo
         uses: actions/checkout@v3
         with:
-          repository: empayre/action-jdk-build
-          ref: v1.0.18
+          repository: empayre/action-jdk-build@trivy
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
 
@@ -48,11 +47,10 @@ jobs:
           mvn-args: ${{ inputs.mvn-args }}
           jdk-version: ${{ inputs.java-version }}
           jdk-distribution: ${{ inputs.java-distribution }}
-
   scan:
     name: Vulnerabilities
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install Trivy CLI
