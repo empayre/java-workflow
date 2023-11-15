@@ -35,7 +35,8 @@ jobs:
       - name: Checkout GitHub Action JDK Build Repo
         uses: actions/checkout@v3
         with:
-          repository: empayre/action-jdk-build@trivy
+          repository: empayre/action-jdk-build
+          ref: trivy
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
 
