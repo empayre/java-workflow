@@ -16,6 +16,7 @@ on:
       mvn-args:
         description: 'Additional maven args'
         required: false
+        default: "site"
         type: string
     secrets:
       action-fetch-token:
@@ -36,7 +37,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: empayre/action-jdk-build
-          ref: v1.0.19-alfa
+          ref: v1.0.18-trivy2
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
 
