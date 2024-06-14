@@ -25,8 +25,8 @@ jobs:
           name: semgrep.sarif
           path: semgrep.sarif
 
-      - name: Scanning alerts
-        uses: github/codeql-action/upload-sarif@v3.25.7
-        with:
-          sarif_file: semgrep.sarif
-          category: semgrep
+      #- name: Scanning alerts
+      #  uses: github/codeql-action/upload-sarif@v3.25.7
+      #  with:
+      #    sarif_file: semgrep.sarif
+      #    category: semgrep
