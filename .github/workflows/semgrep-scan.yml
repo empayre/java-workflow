@@ -15,6 +15,7 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
+            --json --output semgrep.json\
             --metrics=off \
             --config="p/default" | awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}'
 
@@ -22,4 +23,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: parsed_results
-          path: parsed_results.json
+          path: semgrep.json
+
+      - name:
+        run: |
+          cat semgrep.json
