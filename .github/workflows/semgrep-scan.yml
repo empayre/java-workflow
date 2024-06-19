@@ -15,34 +15,12 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
-            --json --output semgrep.json \
             --metrics=off \
             --config="p/default"
 
       - name: convert
         run: |
-          python \
-          import json
-          # Load the JSON file
-          with open('semgrep.json') as f:
-              data = json.load(f)
-          # Extract the required fields
-          extracted_data = []
-          for result in data.get('results', []):
-              path = result.get('path')
-              start = result.get('start')
-              end = result.get('end')
-              severity = result.get('extra', {}).get('severity')
-              extracted_data.append({
-                  'path': path,
-                  'start': start,
-                  'end': end,
-                  'severity': severity
-              })
-
-      - name: save res in json
-        run: |
-          echo semgrep.json > results.json
+          semgrep --json | awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' > parsed_results.json
 
       - name: Save report
         uses: actions/upload-artifact@v3
