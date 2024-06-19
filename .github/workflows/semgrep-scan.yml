@@ -21,7 +21,24 @@ jobs:
 
       - name: convert
         run: |
-          python empayre/java-workflow/.github/workflows/convert-results.py@sec-27
+          python \
+          import json
+          # Load the JSON file
+          with open('semgrep.json') as f:
+              data = json.load(f)
+          # Extract the required fields
+          extracted_data = []
+          for result in data.get('results', []):
+              path = result.get('path')
+              start = result.get('start')
+              end = result.get('end')
+              severity = result.get('extra', {}).get('severity')
+              extracted_data.append({
+                  'path': path,
+                  'start': start,
+                  'end': end,
+                  'severity': severity
+              })
 
       - name: save res in json
         run: |
