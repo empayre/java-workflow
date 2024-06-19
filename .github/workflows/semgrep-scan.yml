@@ -16,12 +16,12 @@ jobs:
         run: | 
           semgrep \
             --json > results.json \
-            --awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' results.json \
-            --awk '{print "Результат: " $1}' results.json \
-            --awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}'}' results.json > parsed_results.json \
+            awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' results.json \
+            awk '{print "Результат: " $1}' results.json \
+            awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}'}' results.json > parsed_results.json \
             --metrics=off \
             --config="p/default"
-            
+
       - name: Save report
         uses: actions/upload-artifact@v4
         with:
