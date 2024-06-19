@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: semgrep.json
-          path: semgrep.jsons
+          path: semgrep.json
 
       #- name: Scanning alerts
       #  uses: github/codeql-action/upload-sarif@v3.25.7
