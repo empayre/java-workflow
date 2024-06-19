@@ -43,9 +43,10 @@ jobs:
                 gsub(/^ */, "", code_line)
             
                 # Print formatted output
-                print message
-                print "Line: " code_line
-                print ""
+                #print message
+                #print "Line: " code_line
+                #print ""
+                print message "\nLine: " code_line "\n"
             }'
 
       - name: Save report
