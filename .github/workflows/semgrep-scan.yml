@@ -15,7 +15,7 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
-            --json --output results.json \
+            --json --output parsed_result.json \
             --metrics=off \
             --config="p/default"
 
@@ -24,10 +24,10 @@ jobs:
           semgrep --json | awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' > parsed_results.json
 
       - name: Save report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: convert-results
-          path: results.json
+          name: parsed_result
+          path: parsed_result.json
 
       #- name: Scanning alerts
       #  uses: github/codeql-action/upload-sarif@v3.25.7
