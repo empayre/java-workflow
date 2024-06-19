@@ -15,7 +15,10 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
-            --json | awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' \
+            --json > results.json \
+            --awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' results.json \
+            --awk '{print "Результат: " $1}' results.json \
+            --awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}'}' results.json > parsed_results.json \
             --metrics=off \
             --config="p/default"
 
