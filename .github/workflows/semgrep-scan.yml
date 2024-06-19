@@ -19,11 +19,19 @@ jobs:
             --metrics=off \
             --config="p/default"
 
+      - name: convert
+        run: |
+          python convert-results.py
+
+      - name: save res in json
+        run: |
+          echo semgrep.json > results.json
+
       - name: Save report
         uses: actions/upload-artifact@v3
         with:
-          name: semgrep.json
-          path: semgrep.json
+          name: convert-results
+          path: results.json
 
       #- name: Scanning alerts
       #  uses: github/codeql-action/upload-sarif@v3.25.7
