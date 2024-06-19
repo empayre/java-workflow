@@ -15,6 +15,7 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
+            --json --output results.json \
             --metrics=off \
             --config="p/default"
 
