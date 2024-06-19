@@ -17,7 +17,36 @@ jobs:
           semgrep \
             --json --output semgrep.json\
             --metrics=off \
-            --config="p/default" | awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}'
+            --config="p/default" | awk '
+            BEGIN { RS=""; FS="\n"; OFS="\n" }
+            {
+                # Extract and clean file path
+                file_path = $2
+                gsub(/\x1b\[[0-9;]*m/, "", file_path)
+                gsub(/^ */, "", file_path)
+            
+                # Extract rule ID
+                rule_id = $3
+                gsub(/^ */, "", rule_id)
+            
+                # Extract message and clean it
+                message = ""
+                for (i = 4; i <= NF; i++) {
+                    if ($i ~ /^[0-9]+┆/) break
+                    message = message $i " "
+                }
+                gsub(/^ */, "", message)
+                gsub(/\x1b\[[0-9;]*m/, "", message)
+            
+                # Extract code line
+                code_line = $i
+                gsub(/^ */, "", code_line)
+            
+                # Print formatted output
+                print message
+                print "Line: " code_line
+                print ""
+            }'
 
       - name: Save report
         uses: actions/upload-artifact@v4
