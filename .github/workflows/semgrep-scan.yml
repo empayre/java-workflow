@@ -15,21 +15,11 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
-            --json > results.json \
-            awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' results.json \
-            awk '{print "Результат: " $1}' results.json \
-            awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}'}' results.json > parsed_results.json \
             --metrics=off \
-            --config="p/default"
+            --config="p/default" | awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}'
 
       - name: Save report
         uses: actions/upload-artifact@v4
         with:
           name: parsed_results
           path: parsed_results.json
-
-      #- name: Scanning alerts
-      #  uses: github/codeql-action/upload-sarif@v3.25.7
-      #  with:
-      #    sarif_file: semgrep.sarif
-      #    category: semgrep
