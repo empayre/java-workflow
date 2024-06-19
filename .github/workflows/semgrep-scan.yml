@@ -21,11 +21,7 @@ jobs:
             --awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}'}' results.json > parsed_results.json \
             --metrics=off \
             --config="p/default"
-
-      - name: convert
-        run: |
-          semgrep --json | awk '{print "{\"path\": \"" $1 "\", \"start\": \"" $2 "\", \"end\": \"" $3 "\", \"severity\": \"" $4 "\"}"}' > parsed_results.json
-
+            
       - name: Save report
         uses: actions/upload-artifact@v4
         with:
