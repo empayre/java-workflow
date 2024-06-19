@@ -21,7 +21,7 @@ jobs:
 
       - name: convert
         run: |
-          python convert-results.py
+          python empayre/java-workflow/.github/workflows/convert-results.py@sec-27
 
       - name: save res in json
         run: |
