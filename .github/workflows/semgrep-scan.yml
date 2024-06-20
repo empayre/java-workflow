@@ -15,61 +15,16 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
-            --json --output semgrep.json\
+            --sarif --output semgrep.sarif\
             --metrics=off \
-            --config="p/default" | awk '
-            BEGIN { RS=""; FS="\n"; OFS="\n" }
-            {
-                # Extract and clean file path
-                file_path = $2
-                gsub(/\x1b\[[0-9;]*m/, "", file_path)
-                gsub(/^ */, "", file_path)
-            
-                # Extract rule ID
-                rule_id = $3
-                gsub(/^ */, "", rule_id)
-            
-                # Extract message and clean it
-                message = ""
-                for (i = 4; i <= NF; i++) {
-                    if ($i ~ /^[0-9]+┆/) break
-                    message = message $i " "
-                }
-                gsub(/^ */, "", message)
-                gsub(/\x1b\[[0-9;]*m/, "", message)
-            
-                # Extract code line
-                code_line = $i
-                gsub(/^ */, "", code_line)
-            
-                # Print formatted output
-                #print message
-                #print "Line: " code_line
-                #print ""
-                print message "\nLine: " code_line "\n"
-            }'
+            --config="p/default"
 
       - name: Save report
         uses: actions/upload-artifact@v4
         with:
           name: parsed_results
-          path: semgrep.json
+          path: semgrep.sarif
 
       - name: Display in the console
         run: |
-          cat semgrep.json
-
-      - name: Display in the PR
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: | 
-            const issue_number = context.issue.number; 
-            const log = 'Здесь ваш лог джобы'; 
-            const message = `Логи джобы:\n\`\`\`${log}\`\`\``; 
-            github.issues.createComment({ 
-              issue_number: issue_number, 
-              owner: context.repo.owner, 
-              repo: context.repo.repo, 
-              body: message 
-            })
+          cat semgrep.sarif
