@@ -55,11 +55,11 @@ jobs:
           name: parsed_results
           path: semgrep.json
 
-      - name:
+      - name: Display in the console
         run: |
           cat semgrep.json
 
-      - name:
+      - name: Display in the PR
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
