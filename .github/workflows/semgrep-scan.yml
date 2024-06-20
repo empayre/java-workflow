@@ -15,7 +15,7 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
-            --sarif --output semgrep.sarif\
+            --gitlab-sast --output semgrep.gitlab-sast\
             --metrics=off \
             --config="p/default"
 
@@ -23,8 +23,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: parsed_results
-          path: semgrep.sarif
+          path: semgrep.gitlab-sast
 
       - name: Display in the console
         run: |
-          cat semgrep.sarif
+          cat semgrep.gitlab-sast
