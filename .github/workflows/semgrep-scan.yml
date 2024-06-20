@@ -58,3 +58,18 @@ jobs:
       - name:
         run: |
           cat semgrep.json
+
+      - name:
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: | 
+            const issue_number = context.issue.number; 
+            const log = 'Здесь ваш лог джобы'; 
+            const message = `Логи джобы:\n\`\`\`${log}\`\`\``; 
+            github.issues.createComment({ 
+              issue_number: issue_number, 
+              owner: context.repo.owner, 
+              repo: context.repo.repo, 
+              body: message 
+            })
