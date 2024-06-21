@@ -17,7 +17,146 @@ jobs:
           semgrep \
             --gitlab-sast --output semgrep.gitlab-sast\
             --metrics=off \
-            --config="p/default"
+            --config="p/default" | awk '
+          BEGIN {
+              print "{"
+              print "  \"vulnerabilities\": ["
+          }
+
+          # Pattern to match the vulnerability block
+          /^  },?$/ {
+              if (vulnerability_started) {
+                  # Closing a vulnerability entry
+                  print "        }"
+                  print "      ],"
+                  print "      \"location\": {"
+                  print "        \"end_line\": " end_line ","
+                  print "        \"file\": \"" file "\","
+                  print "        \"start_line\": " start_line
+                  print "      },"
+                  print "      \"message\": \"" description "\","
+                  print "      \"scanner\": {"
+                  print "        \"id\": \"semgrep\","
+                  print "        \"name\": \"Semgrep\","
+                  print "        \"vendor\": {"
+                  print "          \"name\": \"Semgrep\""
+                  print "        }"
+                  print "      },"
+                  print "      \"severity\": \"" severity "\""
+                  print "    },"
+              }
+              
+              vulnerability_started = 0
+          }
+
+          # Finding new vulnerability block
+          /^    "cve":/ {
+              if (vulnerability_started) {
+                  print "        }"
+                  print "      ],"
+                  print "      \"location\": {"
+                  print "        \"end_line\": " end_line ","
+                  print "        \"file\": \"" file "\","
+                  print "        \"start_line\": " start_line
+                  print "      },"
+                  print "      \"message\": \"" description "\","
+                  print "      \"scanner\": {"
+                  print "        \"id\": \"semgrep\","
+                  print "        \"name\": \"Semgrep\","
+                  print "        \"vendor\": {"
+                  print "          \"name\": \"Semgrep\""
+                  print "        }"
+                  print "      },"
+                  print "      \"severity\": \"" severity "\""
+                  print "    },"
+              }
+              vulnerability_started = 1
+
+              # Extracting the cve value
+              gsub(/"/, "", $0)
+              split($0, arr, ": ")
+              cve = arr[2]
+
+              print "    {"
+              print "      \"category\": \"sast\","
+              print "      \"cve\": \"" cve "\","
+              print "      \"description\": \"" cve "\","
+              print "      \"details\": {"
+              print "        \"confidence\": {"
+              print "          \"name\": \"confidence\","
+              print "          \"type\": \"text\","
+              print "          \"value\": \"MEDIUM\""
+              print "        }"
+              print "      },"
+              print "      \"flags\": [],"
+              print "      \"id\": \"474d389f-e451-c598-b1f2-a6953c85b680\","
+              print "      \"identifiers\": ["
+              print "        {"
+              print "          \"name\": \"Semgrep - " cve "\","
+              print "          \"type\": \"semgrep_type\","
+              print "          \"url\": \"https://semgrep.dev/r/" cve "\","
+              print "          \"value\": \"" cve "\""
+              print "        }"
+              print "      ],"
+          }
+
+          # Extract the file, start_line and end_line from input
+          /^    "location":/ {
+              gsub(/"/, "", $0)
+
+              # Extract file
+              getline
+              split($0, arr, ": ")
+              file = arr[2]
+
+              # Extract start_line
+              getline
+              split($0, arr, ": ")
+              start_line = arr[2]
+
+              # Extract end_line
+              getline
+              split($0, arr, ": ")
+              end_line = arr[2]
+          }
+
+          # Extract description
+          /^    "description":/ {
+              gsub(/"/, "", $0)
+              description = substr($0, index($0,$NF))
+          }
+
+          # Extract severity
+          /^    "severity":/ {
+              gsub(/"/, "", $0)
+              split($0, arr, ": ")
+              severity = arr[2]
+          }
+
+          END {
+              # Closing the last vulnerability entry
+              if (vulnerability_started) {
+                  print "        }"
+                  print "      ],"
+                  print "      \"location\": {"
+                  print "        \"end_line\": " end_line ","
+                  print "        \"file\": \"" file "\","
+                  print "        \"start_line\": " start_line
+                  print "      },"
+                  print "      \"message\": \"" description "\","
+                  print "      \"scanner\": {"
+                  print "        \"id\": \"semgrep\","
+                  print "        \"name\": \"Semgrep\","
+                  print "        \"vendor\": {"
+                  print "          \"name\": \"Semgrep\""
+                  print "        }"
+                  print "      },"
+                  print "      \"severity\": \"" severity "\""
+                  print "    }"
+              }
+              print "  ]"
+              print "}"
+          }'
 
       - name: Save report
         uses: actions/upload-artifact@v4
@@ -28,3 +167,4 @@ jobs:
       - name: Display in the console
         run: |
           cat semgrep.gitlab-sast
+    # --output semgrep.gitlab-sast\
