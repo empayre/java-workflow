@@ -18,60 +18,12 @@ jobs:
             --gitlab-sast --output semgrep.gitlab-sast\
             --metrics=off \
             --config="p/default" | awk '
-            # Функция для удаления кавычек и пробелов вокруг текста
-            function trim_quotes(str) {
-                gsub(/^\"|\"$/, "", str);
-                return str;
-            }
-
-            # Переменные для хранения текущего состояния
-            BEGIN {
-                category=""; description=""; end_line=""; file=""; start_line=""; severity="";
-            }
-
-            /"category"/ {
-                if (category != "" && description != "" && end_line != "" && file != "" && start_line != "" && severity != "") {
-                    print "Category: " category
-                    print "Description: " description
-                    print "End Line: " end_line
-                    print "File: " file
-                    print "Start Line: " start_line
-                    print "Severity: " severity
-                    print ""
-                }
-                category = trim_quotes($2);
-            }
-
-            /"description"/ {
-                description = trim_quotes($2);
-            }
-
-            /"end_line"/ {
-                end_line = trim_quotes($2);
-            }
-
-            /"file"/ {
-                file = trim_quotes($2);
-            }
-
-            /"start_line"/ {
-                start_line = trim_quotes($2);
-            }
-
-            /"severity"/ {
-                severity = trim_quotes($2);
-            }
-
-            END {
-                if (category != "" && description != "" && end_line != "" && file != "" && start_line != "" && severity != "") {
-                    print "Category: " category
-                    print "Description: " description
-                    print "End Line: " end_line
-                    print "File: " file
-                    print "Start Line: " start_line
-                    print "Severity: " severity
-                }
-            }
+            /category/ {gsub(/[{}",]/, ""); print "Category: " $2}
+            /description/ {gsub(/[{}",]/, ""); print "Description: " $2}
+            /end_line/ {gsub(/[{}",]/, ""); print "End Line: " $2}
+            /file/ {gsub(/[{}",]/, ""); print "File: " $2}
+            /start_line/ {gsub(/[{}",]/, ""); print "Start Line: " $2}
+            /severity/ {gsub(/[{}",]/, ""); print "Severity: " $2; print ""}
             '
 
       - name: Save report
