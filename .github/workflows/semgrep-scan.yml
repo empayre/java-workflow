@@ -17,14 +17,7 @@ jobs:
           semgrep \
             --gitlab-sast --output semgrep.gitlab-sast\
             --metrics=off \
-            --config="p/default" | awk '
-            /category/ {gsub(/[{}",]/, ""); print "Category: " $2}
-            /description/ {gsub(/[{}",]/, ""); print "Description: " $2}
-            /end_line/ {gsub(/[{}",]/, ""); print "End Line: " $2}
-            /file/ {gsub(/[{}",]/, ""); print "File: " $2}
-            /start_line/ {gsub(/[{}",]/, ""); print "Start Line: " $2}
-            /severity/ {gsub(/[{}",]/, ""); print "Severity: " $2; print ""}
-            '
+            --config="p/default" | jq '[.vulnerabilities[] | {category, description, location: {end_line: .location.end_line, file: .location.file, start_line: .location.start_line}, severity}]'
 
       - name: Save report
         uses: actions/upload-artifact@v4
