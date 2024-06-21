@@ -15,17 +15,17 @@ jobs:
       - name: Run Semgrep
         run: | 
           semgrep \
-            --gitlab-sast --output semgrep.gitlab-sast\
+            --gitlab-sast --output semgrep.json\
             --metrics=off \
-            --config="p/default" | jq '[.vulnerabilities[] | {category, description, location: {end_line: .location.end_line, file: .location.file, start_line: .location.start_line}, severity}]'
+            --config="p/default" | jq '
+            [.vulnerabilities[] | {category, description, location: {end_line: .location.end_line, file: .location.file, start_line: .location.start_line}, severity}]'
 
       - name: Save report
         uses: actions/upload-artifact@v4
         with:
           name: parsed_results
-          path: semgrep.gitlab-sast
+          path: semgrep.json
 
       - name: Display in the console
         run: |
-          cat semgrep.gitlab-sast
-    # --output semgrep.gitlab-sast\
+          cat semgrep.json
