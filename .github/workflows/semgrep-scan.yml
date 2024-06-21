@@ -19,12 +19,24 @@ jobs:
             --metrics=off \
             --config="p/default"
 
-      - name: Save report
+      - name: Save raw report
         uses: actions/upload-artifact@v4
         with:
-          name: parsed_results
+          name: raw_report
           path: semgrep.json
 
+      - name: Create edited report
+        run: |
+          cat semgrep.json | jq '.vulnerabilities[] | { category, description, location: { end_line, file, start_line }, severity }' > semgrep_edited.json
+
+        shell: bash
+      
+      - name: Save edited report
+        uses: actions/upload-artifact@v4
+        with:
+          name: edited_report
+          path: semgrep_edited.json
+      
       - name: Display in the console
         run: |
-          cat semgrep.json | jq '.vulnerabilities[] | { category, description, location: { end_line, file, start_line }, severity }'
+          cat semgrep_edited.json
