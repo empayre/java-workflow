@@ -56,18 +56,45 @@ jobs:
       - name: Display in the console
         run: |
           cat semgrep_edited.json
-
-      - name: Check
-        id: check_s
-        run: |
-          if jq -e '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > /dev/null; then
-            echo "found=true" >> $GITHUB_ENV
-            jq -c '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > findings.json
-          else
-            echo "found=false" >> $GITHUB_ENV
-          fi
-
-      - name: Notify Mattermost
-        if: env.found == 'true'
-        run: |
-          curl -X POST -H 'Content-Type: application/json' -d "$(jq -c --raw-input '{"text": "\(.findings)"}' findings.json)" ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+          
+      - name: Check & Update/Create PR
+        id: pr-check
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: | 
+            const { data: pullRequests } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
+            const branchName = context.ref.replace('refs/heads/', '');
+            let pr = pullRequests.find(pr => pr.head.ref === branchName);
+            if (!pr) {
+              const { data: newPr } = await github.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Semgrep results for ${branchName}`,
+                head: branchName,
+                base: 'main', // Update to your default branch
+                body: 'This PR contains Semgrep analysis results.',
+              });
+              pr = newPr;
+            }
+            return { prNumber: pr.number };
+    
+      - name: Add Comment with Semgrep Results
+        if: steps.pr-check.outputs.prNumber != ''
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const semgrepResults = fs.readFileSync('semgrep.json', 'utf8');
+            const prNumber = core.getInput('prNumber');
+            await github.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Semgrep analysis results:\n\`\`\`json\n${semgrepResults}\n\`\`\``,
+            });
