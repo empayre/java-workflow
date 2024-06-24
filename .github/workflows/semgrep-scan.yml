@@ -30,6 +30,22 @@ jobs:
           cat semgrep.json | jq '.vulnerabilities[] | { category, description, location, severity }' > semgrep_edited.json
 
         shell: bash
+
+      - name: Download previous report
+        uses: actions/download-artifact@v4
+        with:
+          name: edited_report
+          path: prev_semgrep_edited.json
+        continue-on-error: true
+
+      - name: Compare reports
+        id: compare_reports
+        run: |
+          if cmp -s semgrep_edited.json prev_semgrep_edited.json; then
+            echo "reports_matched=true" >> $GITHUB_ENV
+          else
+            echo "reports_matched=false" >> $GITHUB_ENV
+          fi
       
       - name: Save edited report
         uses: actions/upload-artifact@v4
@@ -40,3 +56,18 @@ jobs:
       - name: Display in the console
         run: |
           cat semgrep_edited.json
+
+      - name: Check
+        id: check_s
+        run: |
+          if jq -e '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > /dev/null; then
+            echo "found=true" >> $GITHUB_ENV
+            jq -c '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > findings.json
+          else
+            echo "found=false" >> $GITHUB_ENV
+          fi
+
+      - name: Notify Mattermost
+        if: env.found == 'true'
+        run: |
+          curl -X POST -H 'Content-Type: application/json' -d "$(jq -c --raw-input '{"text": "\(.findings)"}' findings.json)" ${{ secrets.MATTERMOST_WEBHOOK_URL }}
