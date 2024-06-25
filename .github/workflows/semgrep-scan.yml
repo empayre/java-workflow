@@ -54,7 +54,7 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -X POST -H 'Content-Type: application/json' -d "$(jq -c --raw-input '{"text": "\(.findings)"}' findings.json)" ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+          curl -X POST -H 'Content-Type: application/json' -d "$(jq -c --raw-input '{"text": "\(.findings)"}' findings.json)" ${{ secrets.MATTERMOST_SA_WH_URL }}
           
       - name: Add Comment with Semgrep Results
         if: env.found == 'true'
