@@ -31,6 +31,7 @@ jobs:
 
         shell: bash
 
+        #no
       - name: Download previous report
         uses: actions/download-artifact@v4
         with:
@@ -38,6 +39,7 @@ jobs:
           path: prev_semgrep_edited.json
         continue-on-error: true
 
+        #no
       - name: Compare reports
         id: compare_reports
         run: |
@@ -56,7 +58,23 @@ jobs:
       - name: Display in the console
         run: |
           cat semgrep_edited.json
+
+      - name: Check
+        id: check_s
+        run: |
+          if jq -e '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > /dev/null; then
+            echo "found=true" >> $GITHUB_ENV
+            jq -c '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > findings.json
+          else
+            echo "found=false" >> $GITHUB_ENV
+          fi
+  
+      - name: Notify Mattermost
+        if: env.found == 'true'
+        run: |
+          curl -X POST -H 'Content-Type: application/json' -d "$(jq -c --raw-input '{"text": "\(.findings)"}' findings.json)" ${{ secrets.MATTERMOST_WEBHOOK_URL }}
           
+          #ref
       - name: Check & Update/Create PR
         id: pr-check
         uses: actions/github-script@v3
@@ -90,7 +108,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const semgrepResults = fs.readFileSync('semgrep.json', 'utf8');
+            const semgrepResults = fs.readFileSync('findings.json', 'utf8');
             const prNumber = "${{ steps.pr-check.outputs.prNumber }}";
             await github.issues.createComment({
               issue_number: prNumber,
