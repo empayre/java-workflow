@@ -44,9 +44,9 @@ jobs:
       - name: Check
         id: check_s
         run: |
-          if jq -e '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > /dev/null; then
+          if jq -e '.[] | select(.severity=="Medium" or .severity=="critical")' semgrep_edited.json > /dev/null; then
             echo "found=true" >> $GITHUB_ENV
-            jq -c '.[] | select(.severity=="high" or .severity=="critical")' semgrep_edited.json > findings.json
+            jq -c '.[] | select(.severity=="Medium" or .severity=="critical")' semgrep_edited.json > findings.json
           else
             echo "found=false" >> $GITHUB_ENV
           fi
