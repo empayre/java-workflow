@@ -27,7 +27,7 @@ jobs:
 
       - name: Create edited report
         run: |
-          cat semgrep.json | jq '.vulnerabilities[] | [{ category, description, location, severity }]' > semgrep_edited.json
+          jq -s '[.[][] | { category, description, location, severity }]' semgrep.json > semgrep_edited.json
 
         shell: bash
       
