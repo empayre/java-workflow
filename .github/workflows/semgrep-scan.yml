@@ -98,3 +98,19 @@ jobs:
               repo: context.repo.repo,
               body: `Semgrep analysis results:\n\`\`\`json\n${semgrepResults}\n\`\`\``,
                });
+
+      - name: Add Comment with Semgrep Results
+        if: env.found == 'true'
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const semgrepResults = fs.readFileSync('findings.json', 'utf8');
+            const pr_number = context.payload.pull_request.number;
+            await github.issues.createComment({
+              issue_number: pr_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Semgrep analysis results:\n\`\`\`json\n${semgrepResults}\n\`\`\``,
+            }); 
