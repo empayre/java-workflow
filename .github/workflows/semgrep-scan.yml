@@ -27,7 +27,7 @@ jobs:
 
       - name: Create edited report
         run: |
-          jq -s '[.[][] | select(type=="object") | { category, description, location, severity }]' semgrep.json > semgrep_edited.json
+          cat semgrep.json | jq -s '[.[][] | select(type=="object") | { category, description, location, severity }]' > semgrep_edited.json
 
         shell: bash
       
