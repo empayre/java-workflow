@@ -56,33 +56,6 @@ jobs:
         run: |
           curl -X POST -H 'Content-Type: application/json' -d "$(jq -c --raw-input '{"text": "\(.findings)"}' findings.json)" ${{ secrets.MATTERMOST_WEBHOOK_URL }}
           
-          #ref
-      - name: Check & Update/Create PR
-        id: pr-check
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: | 
-            const { data: pullRequests } = await github.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-            });
-            const branchName = context.ref.replace('refs/heads/', '');
-            let pr = pullRequests.find(pr => pr.head.ref === branchName);
-            if (!pr) {
-              const { data: newPr } = await github.pulls.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `Semgrep results for ${branchName}`,
-                head: branchName,
-                base: 'master', // Update to your default branch
-                body: 'This PR contains Semgrep analysis results.',
-              });
-              pr = newPr;
-            }
-            core.setOutput("prNumber", pr.number);
-
       - name: Add Comment with Semgrep Results
         if: env.found == 'true'
         uses: actions/github-script@v3
