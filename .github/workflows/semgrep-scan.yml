@@ -50,6 +50,12 @@ jobs:
           else
             echo "found=false" >> $GITHUB_ENV
           fi
+
+      - name: Save finding report
+        uses: actions/upload-artifact@v4
+        with:
+          name: findings_report
+          path: findings.json
   
       - name: Notify Mattermost
         if: env.found == 'true'
