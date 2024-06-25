@@ -60,7 +60,13 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -X POST -H 'Content-Type: application/json' -d "$(jq -c '{"text": .}' findings.json)" ${{ secrets.MATTERMOST_SA_WH_URL }}
+          if [ -z "${{ secrets.MATTERMOST_SA_WH_URL }}" ]; then
+            echo "MATTERMOST_SA_WH_URL is not set";
+            exit 1;
+          fi
+          curl -X POST -H 'Content-Type: application/json' \
+          -d "$(jq -c '{\"text\": .}' findings.json)" \
+          ${{ secrets.MATTERMOST_SA_WH_URL }}
           
       - name: Add Comment with Semgrep Results
         if: env.found == 'true'
