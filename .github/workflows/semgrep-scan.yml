@@ -63,7 +63,7 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -i -X POST -d @data.json --data-urlencode 'payload={"text": "hello world"}' \
+          curl -i -X POST -d @findings.json --data-urlencode 'payload={"text": "hello world", "file": "findings.json"}' \
           ${{ secrets.mm-sa-wh-url }}
           
       - name: Add Comment with Semgrep Results
