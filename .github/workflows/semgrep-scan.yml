@@ -63,8 +63,15 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -v -X POST -F "files=@findings.json" \
-          -F 'payload={"text": "hello world, "filename": "findings.json"}' \
+          curl -v -X POST -H 'Content-Type: application/json' \
+          -d '{"text": "hello world",
+                "attachments": [
+                  {
+                    "filename": "findings.json",
+                    "content": "'"$(cat findings.json | jq -R -s .)"'"
+                  }
+                ]
+              }' \
           ${{ secrets.mm-sa-wh-url }}
           
       - name: Add Comment with Semgrep Results
