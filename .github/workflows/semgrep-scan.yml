@@ -64,7 +64,7 @@ jobs:
         if: env.found == 'true'
         run: |
           findings=$(cat findings.json | jq -R -s .)
-          payload=$(jq -n --arg text "hello world" --arg attachments "[{\"filename\": \"findings.json\", \"content\": $findings }]" \
+          payload=$(jq -n --arg text "hello world" --arg attachments "[{\"filename\": \"findings.json\", \"content\": @findings }]" \
           '{text: $text, attachments: ($attachments | fromjson)}')
           curl -v -X POST -H 'Content-Type: application/json' -d "$payload" ${{ secrets.mm-sa-wh-url }}
           
