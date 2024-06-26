@@ -68,7 +68,7 @@ jobs:
             exit 1;
           fi
           curl -X POST -H 'Content-Type: application/json' \
-          -d "$(jq -c '{\"text\": .}' findings.json)" \
+          -d "$(findings.json)" \
           ${{ secrets.mm-sa-wh-url}}
           
       - name: Add Comment with Semgrep Results
