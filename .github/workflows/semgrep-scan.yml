@@ -65,7 +65,7 @@ jobs:
         run: |
           curl -X POST -H 'Content-Type: multipart/form-data' \
           -F "files=@findings.json" \
-          -F "payload={\"text\": \"Hello, this is some text\nThis is more text. 🎉\"};type=application/json" \
+          -F "payload={\"text\": \"Hello, this is some text\nThis is more text. 🎉\"}" \
           ${{ secrets.mm-sa-wh-url }}
           
       - name: Add Comment with Semgrep Results
