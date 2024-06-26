@@ -67,8 +67,8 @@ jobs:
           -d '{"text": "hello world",
                 "attachments": [
                   {
-                    "filename": "findings.json",
-                    "content": "'"$(cat findings.json | jq -R -s .)"'"
+                    "filename": "semgrep_edited.json",
+                    "content": "'"$(cat semgrep_edited.json | jq -R -s .)"'"
                   }
                 ]
               }' \
