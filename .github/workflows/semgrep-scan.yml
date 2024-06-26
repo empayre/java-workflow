@@ -63,8 +63,9 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
+          jq -c '.' findings.json
           curl -X POST -H 'Content-Type: application/json' \
-          -d "$(semgrep_edited.json)" \
+          --data @findings.json \
           ${{ secrets.mm-sa-wh-url}}
           
       - name: Add Comment with Semgrep Results
@@ -74,7 +75,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const semgrepResults = fs.readFileSync('semgrep_edited.json', 'utf8');
+            const semgrepResults = fs.readFileSync('findings.json', 'utf8');
             const pr_number = context.payload.pull_request.number;
             await github.issues.createComment({
               issue_number: pr_number,
