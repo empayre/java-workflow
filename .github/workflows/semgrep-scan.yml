@@ -1,6 +1,9 @@
 name: Run Semgrep
 on:
   workflow_call:
+    secrets:
+      mm-sa-wh-url:
+        required: true
 
 jobs:
   semgrep:
