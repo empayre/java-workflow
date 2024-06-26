@@ -63,9 +63,8 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -X POST -H 'Content-Type: multipart/form-data' \
-          -F "files=@findings.json" \
-          -F 'payload={"text": "Hello, this is some text\nThis is more text. 🎉"}' \
+          curl -X POST -H 'Content-Type: application/json' \
+          -d @findings.json \
           ${{ secrets.mm-sa-wh-url }}
           
       - name: Add Comment with Semgrep Results
