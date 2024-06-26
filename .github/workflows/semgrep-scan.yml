@@ -64,6 +64,7 @@ jobs:
         if: env.found == 'true'
         run: |
           curl -X POST -H 'Content-Type: multipart/form-data' \
+          -F 'payload={"text": "Hello, this is some text\nThis is more text. 🎉"}' \
           -F "files=@findings.json" \
           ${{ secrets.mm-sa-wh-url }}
           
