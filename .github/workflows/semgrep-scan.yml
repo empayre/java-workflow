@@ -63,7 +63,8 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -i -X POST -f @findings.json \
+          curl -i -X POST \
+          -d @findings.json \
           -d 'payload={"text": "hello world"}' \
           ${{ secrets.mm-sa-wh-url }}
           
