@@ -63,10 +63,9 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          jq -c '.' findings.json
           curl -X POST -H 'Content-Type: application/json' \
-          --data @findings.json \
-          ${{ secrets.mm-sa-wh-url}}
+          -d '{"text": "Hello, this is some text\nThis is more text. 🎉"}' \
+          ${{ secrets.mm-sa-wh-url }}
           
       - name: Add Comment with Semgrep Results
         if: env.found == 'true'
