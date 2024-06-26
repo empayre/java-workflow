@@ -63,10 +63,6 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          if [ -z "${{ secrets.mm-sa-wh-url}}" ]; then
-            echo "MATTERMOST_SA_WH_URL is not set";
-            exit 1;
-          fi
           curl -X POST -H 'Content-Type: application/json' \
           -d "$(findings.json)" \
           ${{ secrets.mm-sa-wh-url}}
@@ -78,7 +74,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const semgrepResults = fs.readFileSync('findings.json', 'utf8');
+            const semgrepResults = fs.readFileSync('semgrep_edited.json', 'utf8');
             const pr_number = context.payload.pull_request.number;
             await github.issues.createComment({
               issue_number: pr_number,
