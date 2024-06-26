@@ -63,7 +63,7 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -i -X POST -F "files=@findings.json" \
+          curl -v -X POST -F "files=@findings_report" \
           -F 'payload={"text": "hello world, "filename": "findings.json"}' \
           ${{ secrets.mm-sa-wh-url }}
           
