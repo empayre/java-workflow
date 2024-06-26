@@ -63,7 +63,7 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -X POST -H 'Content-Type: application/json' \
+          curl -i -X POST -H 'Content-Type: application/json' \
           -d '{"file": findings.json}' \
           ${{ secrets.mm-sa-wh-url }}
           
