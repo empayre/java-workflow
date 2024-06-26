@@ -63,10 +63,11 @@ jobs:
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          findings=$(cat findings.json | jq -R -s .)
-          payload=$(jq -n --arg text "hello world" --arg attachments "[{\"filename\": \"findings.json\", \"content\": @findings }]" \
-          '{text: $text, attachments: ($attachments | fromjson)}')
-          curl -v -X POST -H 'Content-Type: application/json' -d "$payload" ${{ secrets.mm-sa-wh-url }}
+          findings=$(jq -Rs '.' < findings.json)
+          payload=$(jq -n --arg text "hello world" --argjson attachments \
+            '[{"filename": "findings.json", "content": $findings}]' \
+            '{text: $text, attachments: $attachments}')
+          curl -v -X POST -H 'Content-Type: application/json' -d "$payload" "${{ secrets.mm-sa-wh-url }}"
           
       - name: Add Comment with Semgrep Results
         if: env.found == 'true'
