@@ -67,14 +67,14 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           STATUS: ${{ job.status }}
         run: |
-          findings=$(jq . findings.json)  # checks and converts the JSON content
+          findings=$(jq . semgrep.json)  # checks and converts the JSON content
           repo_url="$REPO_URL"
           pr_url="$PR_URL"
           status="$STATUS"
           payload=$(jq -n --argjson findings "$findings" --arg repo_url "$repo_url" --arg pr_url "$pr_url" --arg status "$status" --arg text "Найдены результаты анализа" \
             '{text: $text, attachments: [{"filename": "findings.json", "content": $findings}], extra: {"Repository URL": $repo_url, "Pull Request URL": $pr_url, "Job Status": $status}}')
           curl -v -X POST -H "Content-Type: application/json" -d "$payload" "${{ secrets.mm-sa-wh-url }}"
-        
+
       - name: Find and Update Comment with Semgrep Results
         if: env.found == 'true'
         uses: actions/github-script@v3
