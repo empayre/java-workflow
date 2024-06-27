@@ -67,7 +67,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           STATUS: ${{ job.status }}
         run: |
-          findings=$(jq -Rs '.' < findings.json)
+          findings=$(cat findings.json | jq -R -s .)
           repo_url="$REPO_URL"
           pr_url="$PR_URL"
           status="$STATUS"
