@@ -69,11 +69,13 @@ jobs:
             const repo_url = 'https://github.com/' + context.repo.owner + '/' + context.repo.repo;
             process.env.pr_url_env = pr_url;
             process.env.repo_url_env = repo_url;
+            const fs = require('fs');
+            fs.writeFileSync('urls.txt', `PR URL: ${pr_url}\nRepo URL: ${repo_url}`);
   
       - name: Notify Mattermost
         if: env.found == 'true'
         run: |
-          curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\":\"${{ env.pr_url_env }}\"}" \
+          curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\":\"$(cat urls.txt)\"}" \
           ${{ secrets.mm-sa-wh-url }}
 
       - name: Find and Update Comment with Semgrep Results
