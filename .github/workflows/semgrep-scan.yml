@@ -66,7 +66,7 @@ jobs:
           REPO_URL: ${{ github.repository_url }}
         run: |
           repo_url="$REPO_URL"
-          curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$repo_url\"}" \
+          curl -v -X POST -H 'Content-Type: application/json' --data-urlencode '$repo_url' \
           ${{ secrets.mm-sa-wh-url }}
 
       - name: Find and Update Comment with Semgrep Results
