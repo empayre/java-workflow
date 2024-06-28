@@ -49,7 +49,7 @@ jobs:
         run: |
           if jq -e '[.[] | select(.severity=="Medium" or .severity=="High" or .severity=="Critical")]' semgrep_edited.json > /dev/null; then
             echo "found=true" >> $GITHUB_ENV
-            jq -c '[.[] | select(.severity=="Medium" or .severity=="High" or .severity=="Critical")]' semgrep_edited.json > findings.json
+            jq '[.[] | select(.severity=="Medium" or .severity=="High" or .severity=="Critical")]' semgrep_edited.json > findings.json
           else
             echo "found=false" >> $GITHUB_ENV
           fi
@@ -69,7 +69,7 @@ jobs:
           payload=$(jq -n --arg text "Сканирование завершено" --arg repo_url "$repo_url" \
             '{text: $text, attachments: [], extra: {"Repository URL": $repo_url}}')
           curl -v -X POST -H "Content-Type: application/json" -d "$payload" "${{ secrets.mm-sa-wh-url }}"
-        
+
       - name: Find and Update Comment with Semgrep Results
         if: env.found == 'true'
         uses: actions/github-script@v3
