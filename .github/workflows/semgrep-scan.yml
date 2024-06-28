@@ -67,8 +67,8 @@ jobs:
           script: |
             const pr_url = context.payload.pull_request.html_url;
             const repo_url = 'https://github.com/' + context.repo.owner + '/' + context.repo.repo;
-            echo "pr_url_env=pr_url" >> $GITHUB_ENV
-            echo "repo_url_env=repo_url" >> $GITHUB_ENV
+            process.env.pr_url_env = pr_url;
+            process.env.repo_url_env = repo_url;
   
       - name: Notify Mattermost
         if: env.pr_url_env == 'true'
