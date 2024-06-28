@@ -71,9 +71,9 @@ jobs:
             process.env.repo_url_env = repo_url;
   
       - name: Notify Mattermost
-        if: env.pr_url_env == 'true'
+        if: env.found == 'true'
         run: |
-          curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\":\"$pr_url_env\"}" \
+          curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\":\"${{ env.pr_url_env }}\"}" \
           ${{ secrets.mm-sa-wh-url }}
 
       - name: Find and Update Comment with Semgrep Results
