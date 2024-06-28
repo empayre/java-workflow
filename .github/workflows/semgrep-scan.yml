@@ -59,16 +59,21 @@ jobs:
         with:
           name: findings_report
           path: findings.json
+
+      - name: Save urls
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr_url = context.payload.pull_request.html_url;
+            const repo_url = 'https://github.com/' + context.repo.owner + '/' + context.repo.repo;
+            echo "pr_url_env=pr_url" >> $GITHUB_ENV
+            echo "repo_url_env=repo_url" >> $GITHUB_ENV
   
       - name: Notify Mattermost
-        if: env.found == 'true'
-        env:
-          REPO_URL: ${{ github.repository_url }}
+        if: env.pr_url_env == 'true'
         run: |
-          repo_url="$REPO_URL"
-          echo "$repo_url"
-          payload="{\"text\": \"$repo_url\"}"
-          curl -v -X POST -H 'Content-Type: application/json' -d "$repo_url" \
+          curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\":\"$pr_url_env\"}" \
           ${{ secrets.mm-sa-wh-url }}
 
       - name: Find and Update Comment with Semgrep Results
