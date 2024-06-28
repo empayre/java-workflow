@@ -66,9 +66,8 @@ jobs:
           REPO_URL: ${{ github.repository_url }}
         run: |
           repo_url="$REPO_URL"
-          payload=$(jq -n --arg text "Сканирование завершено" --arg repo_url "$repo_url" \
-            '{text: $text, attachments: [], extra: {"Repository URL": $repo_url}}')
-          curl -v -X POST -H "Content-Type: application/json" -d "$payload" "${{ secrets.mm-sa-wh-url }}"
+          payload="{\"text\": \"Сканирование завершено\", \"attachments\": [], \"extra\": {\"Repository URL\": \"$repo_url\"}}"
+          curl -v -X POST -H 'Content-Type: application/json' -d "$payload" "${{ secrets.mm-sa-wh-url }}"
 
       - name: Find and Update Comment with Semgrep Results
         if: env.found == 'true'
