@@ -66,6 +66,8 @@ jobs:
           REPO_URL: ${{ github.repository_url }}
         run: |
           repo_url="$REPO_URL"
+          echo "$repo_url"
+          payload="{\"text\": \"$repo_url\"}"
           curl -v -X POST -H 'Content-Type: application/json' -d "$repo_url" \
           ${{ secrets.mm-sa-wh-url }}
 
