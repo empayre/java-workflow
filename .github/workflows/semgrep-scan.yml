@@ -78,6 +78,25 @@ jobs:
           curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\":\"$(cat urls.txt)\"}" \
           ${{ secrets.mm-sa-wh-url }}
 
+      - name: Mattermost Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_USERNAME: ${{ github.event.repository.name }}
+          SLACK_WEBHOOK: ${{ secrets.mm-sa-wh-url }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_LINK_NAMES: true
+          SLACK_FOOTER: ""
+
+      - name: MM Not
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.mm-sa-wh-url }} # required
+        if: always() # Pick up events even if the job fails or is canceled.
+        
       - name: Find and Update Comment with Semgrep Results
         if: env.found == 'true'
         uses: actions/github-script@v3
