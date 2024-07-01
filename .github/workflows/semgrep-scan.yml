@@ -71,12 +71,6 @@ jobs:
             process.env.repo_url_env = repo_url;
             const fs = require('fs');
             fs.writeFileSync('urls.txt', `PR URL: ${pr_url}\nRepo URL: ${repo_url}`);
-  
-      - name: Notify Mattermost
-        if: env.found == 'true'
-        run: |
-          curl -v -X POST -H 'Content-Type: application/json' -d "{\"text\":\"$(cat urls.txt)\"}" \
-          ${{ secrets.mm-sa-wh-url }}
 
       - name: Mattermost Notification
         if: always()
