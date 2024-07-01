@@ -58,18 +58,6 @@ jobs:
           name: findings_report
           path: findings.json
 
-      - name: Save urls
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const pr_url = context.payload.pull_request.html_url;
-            const repo_url = 'https://github.com/' + context.repo.owner + '/' + context.repo.repo;
-            process.env.pr_url_env = pr_url;
-            process.env.repo_url_env = repo_url;
-            const fs = require('fs');
-            fs.writeFileSync('urls.txt', `PR URL: ${pr_url}\nRepo URL: ${repo_url}`);
-
       - name: Mattermost Notification
         if: always()
         uses: rtCamp/action-slack-notify@v2.2.0
