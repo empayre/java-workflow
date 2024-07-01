@@ -31,8 +31,6 @@ jobs:
       - name: Create edited report
         run: |
           cat semgrep.json | jq '[.vulnerabilities[] | { category, description, location, severity }]' > semgrep_edited.json
-
-        shell: bash
       
       - name: Save edited report
         uses: actions/upload-artifact@v4
