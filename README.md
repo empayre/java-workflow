@@ -8,6 +8,11 @@
 Чтобы начать использовать `java-workflow` в своем репозитории - добавьте в директорию `/.github/workflows/` файлы
 `build.yml` и `deploy.yml`, файлов описания workflow не обязательно должно быть два, вы можете самостоятельно описать workflow с использованием `java-workflow`.
 
+В репозитории есть инструменты для сканирования:
+- Semgrep - сканирует по дефолтным правилам
+
+Чтобы начать использовать инструмент - добавьте в директорию файл `semgrep-scan.yml`.
+
 Пример сборки и деплоя сервиса:
 
 `build.yml`
@@ -84,4 +89,22 @@ jobs:
     uses: empayre/java-workflow/.github/workflows/maven-swag-deploy.yml@v1
     secrets:
       mm-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+```
+
+Пример использования инструмента:
+
+`semgrep-scan.yml`
+```yml
+name: Run Semgrep
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  scan:
+    uses: empayre/java-workflow/.github/workflows/semgrep-scan.yml@v1
+    secrets:
+      mm-sa-wh-url: ${{ secrets.MATTERMOST_SA_WH_URL}}
 ```
