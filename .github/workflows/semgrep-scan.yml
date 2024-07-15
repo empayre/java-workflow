@@ -9,7 +9,7 @@ jobs:
   semgrep:
     runs-on: ubuntu-latest
     container:
-      image: returntocorp/semgrep
+      image: returntocorp/semgrep:1.78.0
 
     steps:
       - name: Checkout code
