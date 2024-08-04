@@ -1,12 +1,7 @@
-name: Sarif scan
+name: Trivy
 
 on:
-    push:
-      branches:
-        - '*'
-    pull_request:
-      branches:
-        - '*'
+  workflow_call:
 
 jobs:
   generate_sbom_and_scan:
@@ -18,7 +13,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install -g cdxgen trivy
+          npm install -g @cyclonedx/cdxgen
 
       - name: Generate SBOM
         run: |
