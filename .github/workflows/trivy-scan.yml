@@ -15,6 +15,11 @@ jobs:
         run: |
           npm install -g @cyclonedx/cdxgen
 
+      - name: Install Trivy SLA
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.39.1/trivy_0.39.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.39.1_Linux-64bit.deb
+
       - name: Generate SBOM
         run: |
           echo "Генерация SBOM..."
