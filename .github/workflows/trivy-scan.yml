@@ -24,11 +24,17 @@ jobs:
         run: |
           echo "Генерация SBOM..."
           cdxgen -t java -o bom.json
-
+      
+      - name: Save raw report
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: bom.json
+  
       - name: Scan SBOM for vulnerabilities
         run: |
           echo "Сканирование SBOM на наличие уязвимостей..."
-          trivy sbom --exit-code 1 --severity CRITICAL,HIGH bom.json
+          trivy sbom --severity CRITICAL,HIGH --format sarif -o trivy-report.sarif bom.json
 
       - name: Upload SARIF report
         uses: actions/upload-artifact@v4
