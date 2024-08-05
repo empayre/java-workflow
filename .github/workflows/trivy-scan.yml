@@ -34,16 +34,10 @@ jobs:
       - name: Scan SBOM for vulnerabilities
         run: |
           echo "Сканирование SBOM на наличие уязвимостей..."
-          trivy sbom --severity CRITICAL,HIGH --format sarif -o trivy-report.sarif bom.json
+          trivy sbom --severity CRITICAL,HIGH --format spdx-json -o trivy-report.json bom.json
 
       - name: Upload SARIF report
         uses: actions/upload-artifact@v4
         with:
-          name: trivy-report.sarif
-          path: trivy-report.sarif
-      
-      - name: Scanning alerts
-        uses: github/codeql-action/upload-sarif@v3.25.7
-        with:
-          sarif_file: trivy-report.sarif
-          category: trivy 
+          name: trivy-report
+          path: trivy-report.json
