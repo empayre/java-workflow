@@ -20,7 +20,6 @@ jobs:
           wget https://github.com/aquasecurity/trivy/releases/download/v0.54.1/trivy_0.54.1_Linux-64bit.deb
           sudo dpkg -i trivy_0.54.1_Linux-64bit.deb
 
-
       - name: Generate SBOM
         run: |
           echo "Генерация SBOM..."
@@ -40,5 +39,11 @@ jobs:
       - name: Upload SARIF report
         uses: actions/upload-artifact@v4
         with:
-          name: trivy-report
+          name: trivy-report.sarif
           path: trivy-report.sarif
+      
+      - name: Scanning alerts
+        uses: github/codeql-action/upload-sarif@v3.25.7
+        with:
+          sarif_file: trivy-report.sarif
+          category: trivy 
