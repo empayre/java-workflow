@@ -23,7 +23,7 @@ jobs:
       - name: Generate SBOM
         run: |
           echo "Генерация SBOM..."
-          cdxgen -t java -o bom.json
+          cdxgen -t java -o bommm.json
       
       - name: Save raw report
         uses: actions/upload-artifact@v4
