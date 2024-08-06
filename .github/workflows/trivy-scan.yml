@@ -34,7 +34,7 @@ jobs:
       - name: Scan SBOM for vulnerabilities
         run: |
           echo "Сканирование SBOM на наличие уязвимостей..."
-          trivy sbom --exit-code 1 --severity CRITICAL,HIGH ./bom.json
+          trivy sbom --exit-code 1 --severity CRITICAL,HIGH ./target/bom.json
 
       - name: Upload SARIF report
         uses: actions/upload-artifact@v4
