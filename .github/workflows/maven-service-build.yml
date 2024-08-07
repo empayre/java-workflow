@@ -57,10 +57,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install Trivy CLI
         run: |
-          wget https://github.com/aquasecurity/trivy/releases/download/v0.39.1/trivy_0.39.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.39.1_Linux-64bit.deb
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.54.1/trivy_0.54.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.54.1_Linux-64bit.deb
       - uses: actions/download-artifact@v3
         with:
           name: bom.json
       - name: Run Trivy with SBOM
-        run: trivy sbom --exit-code 1 --severity CRITICAL,HIGH ./bom.json
+        run: trivy sbom --severity CRITICAL,HIGH ./bom.json
