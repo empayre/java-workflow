@@ -31,10 +31,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout GitHub Action JDK Build Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: empayre/action-jdk-build
           ref: v1.0.19
@@ -53,14 +53,23 @@ jobs:
     name: Vulnerabilities
     needs: build
     runs-on: ubuntu-20.04
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Trivy CLI
         run: |
           wget https://github.com/aquasecurity/trivy/releases/download/v0.54.1/trivy_0.54.1_Linux-64bit.deb
           sudo dpkg -i trivy_0.54.1_Linux-64bit.deb
+
       - uses: actions/download-artifact@v3
         with:
           name: bom.json
+
+      - name: Save raw report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bom
+          path: bom.json
+
       - name: Run Trivy with SBOM
         run: trivy sbom --severity CRITICAL,HIGH ./bom.json
