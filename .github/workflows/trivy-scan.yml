@@ -23,9 +23,9 @@ jobs:
       - name: Generate SBOM
         run: |
           echo "Генерация SBOM..."
-          cdxgen -t java -o bommm.json
+          cdxgen -t java -o sbom.json
   
       - name: Scan SBOM for vulnerabilities
         run: |
           echo "Сканирование SBOM на наличие уязвимостей..."
-          trivy sbom --severity CRITICAL,HIGH ./target/bom.json
+          trivy sbom --severity CRITICAL,HIGH sbom.json
