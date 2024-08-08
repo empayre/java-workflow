@@ -25,6 +25,8 @@ on:
         required: true
       github-pkg-ro-user:
         required: true
+      mm-sa-wh-url:
+        required: true
 
 jobs:
   build:
