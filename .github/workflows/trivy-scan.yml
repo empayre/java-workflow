@@ -2,6 +2,9 @@ name: Trivy
 
 on:
   workflow_call:
+    secrets:
+      mm-sa-wh-url:
+        required: true
 
 jobs:
   generate_sbom_and_scan:
