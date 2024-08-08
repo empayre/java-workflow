@@ -31,4 +31,4 @@ jobs:
       - name: Scan SBOM for vulnerabilities
         run: |
           echo "Сканирование SBOM на наличие уязвимостей..."
-          trivy sbom --severity CRITICAL,HIGH sbom.json
+          trivy sbom --format github -o report.gsbom sbom.json
