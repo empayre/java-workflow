@@ -65,11 +65,5 @@ jobs:
         with:
           name: bom.json
 
-      - name: Save raw report
-        uses: actions/upload-artifact@v4
-        with:
-          name: bom
-          path: bom.json
-
       - name: Run Trivy with SBOM
         run: trivy sbom --severity CRITICAL,HIGH ./bom.json
