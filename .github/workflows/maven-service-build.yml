@@ -104,7 +104,7 @@ jobs:
                 <details>
                   <summary>Trivy Analysis Results</summary>
 
-                  <pre style="background-color: #F6F8FA; color: black;">
+                  <pre style="background-color: #F6F8FA; color: black; padding: 1rem; border-radius: 10px;">
                 ${trivyResults}
                   </pre>
                 </details>
