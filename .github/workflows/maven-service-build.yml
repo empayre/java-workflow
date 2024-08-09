@@ -100,19 +100,27 @@ jobs:
               });
           
             const existingComment = comments.data.find(comment => comment.body.includes('Trivy analysis results:'));
-          
+            const formattedResults = `
+                <details>
+                  <summary>Trivy Analysis Results</summary>
+
+                  <pre style="background-color: #F6F8FA; color: black; padding: 10px; border-radius: 6px;">
+                ${trivyResults}
+                  </pre>
+                </details>
+                      `;
             if (existingComment) {
                 await github.issues.updateComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   comment_id: existingComment.id,
-                  body: `Trivy analysis results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
+                  body: formattedResults,
                 });
               } else {
                 await github.issues.createComment({
                   issue_number: pr_number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  body: `Trivy analysis results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
+                  body: formattedResults,
                 });
               }   
