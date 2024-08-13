@@ -16,7 +16,6 @@ on:
       mvn-args:
         description: 'Additional maven args'
         required: false
-        default: "site"
         type: string
     secrets:
       action-fetch-token:
