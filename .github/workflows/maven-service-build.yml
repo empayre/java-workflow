@@ -84,34 +84,29 @@ jobs:
           SLACK_FOOTER: ""  
 
       - name: Find and Update Comment with Trivy Results
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const trivyResults = fs.readFileSync('trivy-report.json');
-            const pr_number = context.payload.pull_request.number;
-        
-            const comments = await github.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr_number,
-              });
-          
-            const existingComment = comments.data.find(comment => comment.body.includes('Trivy analysis results:'));
-          
+            const trivyResults = fs.readFileSync('trivy-report.json', 'utf-8');
+            const { number: pr_number } = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+            const { data: comments } = await github.issues.listComments({ owner, repo, issue_number: pr_number });
+            const body = `Trivy analysis results:\n\`\`\`json\n${trivyResults}\n\`\`\``;
+            const existingComment = comments.find(({ body }) => body.includes('Trivy analysis results:'));
             if (existingComment) {
-                await github.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: existingComment.id,
-                  body: `Trivy analysis results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
-                });
-              } else {
-                await github.issues.createComment({
-                  issue_number: pr_number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: `Trivy analysis results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
-                });
-              }   
+              await github.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existingComment.id,
+                body,
+              });
+            } else {
+              await github.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr_number,
+                body,
+              });
+            }
