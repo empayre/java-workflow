@@ -73,23 +73,13 @@ jobs:
         run: |
           cat trivy-report.json
 
-      - name: Mattermost Notification
-        if: always()
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_USERNAME: ${{ github.event.repository.name }}
-          SLACK_WEBHOOK: ${{ secrets.mm-sa-wh-url }}
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_LINK_NAMES: true
-          SLACK_FOOTER: ""  
-
       - name: Find and Update Comment with Trivy Results
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const trivyResults = fs.readFileSync('trivy-report.json');
+            const trivyResults = fs.readFileSync('trivy-report.json', 'utf8');
             const pr_number = context.payload.pull_request.number;
             const comments = await github.issues.listComments({
                 owner: context.repo.owner,
@@ -112,4 +102,14 @@ jobs:
                   body: `Trivy results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
                 });
 
-
+      - name: Mattermost Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_USERNAME: ${{ github.event.repository.name }}
+          SLACK_WEBHOOK: ${{ secrets.mm-sa-wh-url }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_LINK_NAMES: true
+          SLACK_FOOTER: ""  
+          SLACK_MESSAGE: |
+            Commit Message: ${{ github.event.head_commit.message }}
