@@ -100,7 +100,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   body: `Trivy results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
-                });
+                });}
 
       - name: Mattermost Notification
         if: always()
