@@ -112,4 +112,4 @@ jobs:
           SLACK_LINK_NAMES: true
           SLACK_FOOTER: ""  
           SLACK_MESSAGE: |
-            Commit Message: ${{ github.event.head_commit.message }}
+            Commit Message: ${{ github.event.workflow_run.head_commit.message }}
