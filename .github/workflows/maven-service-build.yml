@@ -111,5 +111,4 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_LINK_NAMES: true
           SLACK_FOOTER: ""  
-          SLACK_MESSAGE: |
-            Commit Message: ${{ github.event.workflow_run.head_commit.message }}
+          SLACK_MESSAGE: ${{ github.event.workflow_run.head_commit.message }}
