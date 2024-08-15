@@ -50,6 +50,11 @@ jobs:
             jq '[.[] | select(.severity=="Medium" or .severity=="High" or .severity=="Critical")]' semgrep_edited.json > findings.json
           else
             echo "found=false" >> $GITHUB_ENV
+
+          if jq -e 'length == 0' findings.json > /dev/null; then
+            echo "resultMessage=Результатов Semgrep не найдено." >> $GITHUB_ENV
+          else
+            echo "resultMessage=Обнаружены результаты Semgrep." >> $GITHUB_ENV
           fi
 
       - name: Save finding report
@@ -72,7 +77,7 @@ jobs:
               repo: context.repo.repo,
               issue_number: pr_number,
             });
-            con st existingComment = comments.data.find(comment => comment.body.includes('Semgrep analysis results:'));
+            const existingComment = comments.data.find(comment => comment.body.includes('Semgrep analysis results:'));
             if (existingComment) {  
               await github.issues.updateComment({
                 owner: context.repo.owner,
@@ -87,12 +92,6 @@ jobs:
                 repo: context.repo.repo,
                 body: `Semgrep analysis results:\n\`\`\`json\n${semgrepResults}\n\`\`\``,
               });
-            } 
-
-            if (semgrepResults == '[]') {
-              core.exportVariable('semgrepResFree', 'true');
-            } else {
-              core.exportVariable('semgrepResFree', 'false');
             }
 
       - name: Mattermost Notification
@@ -104,4 +103,4 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_LINK_NAMES: true
           SLACK_FOOTER: ""
-          SLACK_MESSAGE: ${{ env.semgrepResFrege == 'true' && 'Warning' || 'Clear'}}
+          SLACK_MESSAGE: ${{ env.resultMessage }}
