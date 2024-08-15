@@ -57,16 +57,6 @@ jobs:
         with:
           name: findings_report
           path: findings.json
-
-      - name: Mattermost Notification
-        if: always()
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_USERNAME: ${{ github.event.repository.name }}
-          SLACK_WEBHOOK: ${{ secrets.mm-sa-wh-url }}
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_LINK_NAMES: true
-          SLACK_FOOTER: ""
         
       - name: Find and Update Comment with Semgrep Results
         if: env.found == 'true'
@@ -100,4 +90,21 @@ jobs:
                 repo: context.repo.repo,
                 body: `Semgrep analysis results:\n\`\`\`json\n${semgrepResults}\n\`\`\``,
               });
-            } 
+            }
+            
+            if (semgrepResults == '[]') {
+              core.exportVariable('semgrepResFree', 'true');
+            } else {
+              core.exportVariable('semgrepResFree', 'false');
+            }
+
+      - name: Mattermost Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_USERNAME: ${{ github.event.repository.name }}
+          SLACK_WEBHOOK: ${{ secrets.mm-sa-wh-url }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_LINK_NAMES: true
+          SLACK_FOOTER: ""
+          SLACK_MESSAGE: ${{ env.semgrepResFree == 'true' && 'Warning' || 'Clear'}}
