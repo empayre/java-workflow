@@ -50,7 +50,7 @@ jobs:
             jq '[.[] | select(.severity=="Medium" or .severity=="High" or .severity=="Critical")]' semgrep_edited.json > findings.json
           else
             echo "found=false" >> $GITHUB_ENV
-
+          fi
           if jq -e 'length == 0' findings.json > /dev/null; then
             echo "resultMessage=Результатов Semgrep не найдено." >> $GITHUB_ENV
           else
