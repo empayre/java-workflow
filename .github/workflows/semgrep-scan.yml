@@ -51,22 +51,17 @@ jobs:
           else
             echo "found=false" >> $GITHUB_ENV
           fi
+          if jq -e 'length == 0' findings.json > /dev/null; then
+            echo "resultMessage=No Semgrep results found" >> $GITHUB_ENV
+          else
+            echo "resultMessage=Semgrep results found" >> $GITHUB_ENV
+          fi
 
       - name: Save finding report
         uses: actions/upload-artifact@v4
         with:
           name: findings_report
           path: findings.json
-
-      - name: Mattermost Notification
-        if: always()
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_USERNAME: ${{ github.event.repository.name }}
-          SLACK_WEBHOOK: ${{ secrets.mm-sa-wh-url }}
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_LINK_NAMES: true
-          SLACK_FOOTER: ""
         
       - name: Find and Update Comment with Semgrep Results
         if: env.found == 'true'
@@ -77,16 +72,13 @@ jobs:
             const fs = require('fs');
             const semgrepResults = fs.readFileSync('findings.json', 'utf8');
             const pr_number = context.payload.pull_request.number;
-
-            const comments = await github.issues.listComments({
+            const comments = await github.issues.listComments({ 
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr_number,
             });
-
             const existingComment = comments.data.find(comment => comment.body.includes('Semgrep analysis results:'));
-
-            if (existingComment) {
+            if (existingComment) {  
               await github.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -100,4 +92,15 @@ jobs:
                 repo: context.repo.repo,
                 body: `Semgrep analysis results:\n\`\`\`json\n${semgrepResults}\n\`\`\``,
               });
-            } 
+            }
+
+      - name: Mattermost Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_USERNAME: ${{ github.event.repository.name }}
+          SLACK_WEBHOOK: ${{ secrets.mm-sa-wh-url }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_LINK_NAMES: true
+          SLACK_FOOTER: ""
+          SLACK_MESSAGE: ${{ env.resultMessage }}
