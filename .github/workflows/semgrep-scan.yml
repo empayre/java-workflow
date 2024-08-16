@@ -52,9 +52,9 @@ jobs:
             echo "found=false" >> $GITHUB_ENV
           fi
           if jq -e 'length == 0' findings.json > /dev/null; then
-            echo "resultMessage=Результатов Semgrep не найдено." >> $GITHUB_ENV
+            echo "resultMessage=No Semgrep results found" >> $GITHUB_ENV
           else
-            echo "resultMessage=Обнаружены результаты Semgrep." >> $GITHUB_ENV
+            echo "resultMessage=Semgrep results found" >> $GITHUB_ENV
           fi
 
       - name: Save finding report
