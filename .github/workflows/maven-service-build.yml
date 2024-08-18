@@ -111,4 +111,4 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_LINK_NAMES: true
           SLACK_FOOTER: ""  
-          SLACK_MESSAGE: ${{ github.event.head_commit.message }}
+          SLACK_MESSAGE: ${{ github.event.pull_request.title }}
