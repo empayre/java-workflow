@@ -1,0 +1,34 @@
+name: Trivy
+
+on:
+  workflow_call:
+    secrets:
+      mm-sa-wh-url:
+        required: true
+
+jobs:
+  generate_sbom_and_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          npm install -g @cyclonedx/cdxgen
+
+      - name: Install Trivy SLA
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.54.1/trivy_0.54.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.54.1_Linux-64bit.deb
+
+      - name: Generate SBOM
+        run: |
+          echo "Генерация SBOM..."
+          cdxgen -t java -o sbom.json
+  
+      - name: Scan SBOM for vulnerabilities
+        run: |
+          echo "Сканирование SBOM на наличие уязвимостей..."
+          trivy sbom --severity CRITICAL,HIGH sbom.json
