@@ -92,14 +92,14 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   comment_id: existingComment.id,
-                  body: `Trivy results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
+                  body: `### Trivy results:\n${trivyResults}`,
                 });
               } else {
                 await github.issues.createComment({
                   issue_number: pr_number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  body: `Trivy results:\n\`\`\`json\n${trivyResults}\n\`\`\``,
+                  body: `### Trivy results:\n${trivyResults}`,
                 });}
 
       - name: Mattermost Notification
