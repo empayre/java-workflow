@@ -4,6 +4,8 @@ on:
     secrets:
       mm-sa-wh-url:
         required: true
+      github-token:
+        required: true
 
 jobs:
   semgrep:
