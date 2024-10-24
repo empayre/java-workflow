@@ -17,7 +17,9 @@ jobs:
 
       - name: Checkout rules
         run: |
-          git clone https://github.com/empayre/semgrep-rules.git
+          git clone https://$GITHUB_TOKEN@github.com/empayre/semgrep-rules.git
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Semgrep
         run: | 
