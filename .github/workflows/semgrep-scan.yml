@@ -2,9 +2,9 @@ name: Run Semgrep
 on:
   workflow_call:
     secrets:
-      mm-sa-wh-url:
-        required: true
       github-token:
+        required: true
+      mm-sa-wh-url:
         required: true
 
 jobs:
@@ -20,8 +20,8 @@ jobs:
       - name: Checkout rules
         run: |
           git clone https://$GITHUB_TOKEN@github.com/empayre/semgrep-rules.git
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
 
       - name: Run Semgrep
         run: | 
