@@ -15,12 +15,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Checkout rules
+        run: |
+          git clone https://github.com/empayre/semgrep-rules.git
+
       - name: Run Semgrep
         run: | 
           semgrep \
             --gitlab-sast --output semgrep.json\
             --metrics=off \
-            --config="https://github.com/empayre/semgrep-rules/tree/addNewRule/semgrep-rules"
+            --config auto \
+            --config ./semgrep-rules/ \
 
       - name: Save raw report
         uses: actions/upload-artifact@v4
