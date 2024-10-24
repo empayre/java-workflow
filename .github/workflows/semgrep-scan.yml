@@ -20,7 +20,8 @@ jobs:
           semgrep \
             --gitlab-sast --output semgrep.json\
             --metrics=off \
-            --config="p/default"
+            --config="p/auto" \
+            --config="https://github.com/empayre/semgrep-rules/tree/addNewRule/semgrep-rules"
 
       - name: Save raw report
         uses: actions/upload-artifact@v4
