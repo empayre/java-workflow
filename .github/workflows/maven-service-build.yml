@@ -63,15 +63,15 @@ jobs:
           wget https://github.com/aquasecurity/trivy/releases/download/v0.57.0/trivy_0.57.0_Linux-64bit.deb
           sudo dpkg -i trivy_0.57.0_Linux-64bit.deb
 
+      - uses: actions/download-artifact@v3
+        with:
+          name: bom.json
+
       - name: Run Trivy image with SBOM
         run: |
           trivy sbom \
           --db-repository public.ecr.aws/aquasecurity/trivy-db:2 \
           ./bom.json
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: bom.json
 
       - name: Display in the console
         run: |
