@@ -66,7 +66,7 @@ jobs:
       - name: Run Trivy image with SBOM
         run: |
           trivy sbom \
-          --db-repository stilya/trivy-with-db:latest \
+          --db-repository public.ecr.aws/aquasecurity/trivy-db:2 \
           ./bom.json
 
       - uses: actions/download-artifact@v3
