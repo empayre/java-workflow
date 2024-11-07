@@ -71,6 +71,7 @@ jobs:
         run: |
           trivy sbom \
           --db-repository public.ecr.aws/aquasecurity/trivy-db:2 \
+          --severity CRITICAL,HIGH --format table -o trivy-report.json \
           ./bom.json
 
       - name: Display in the console
