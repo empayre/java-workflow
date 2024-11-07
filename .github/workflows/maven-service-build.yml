@@ -58,9 +58,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Trivy image with SBOM
-        uses: docker://stilya/trivy-with-db:latest
+        uses: docker://stilya/trivy-with-db
         with: 
-          entrypoint: /bin/sh
+          entrypoint: "trivy"
           args: -c "trivy sbom --severity CRITICAL,HIGH --format table -o trivy-report.json ./bom.json"
 
       - uses: actions/download-artifact@v3
