@@ -57,17 +57,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Install Trivy CLI
-        run: |
-          wget https://github.com/aquasecurity/trivy/releases/download/v0.54.1/trivy_0.54.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.54.1_Linux-64bit.deb
+      - name: Run Trivy image with SBOM
+        uses: docker://stilya/trivy-with-db:latest
+        with: 
+          entrypoint: /bin/sh
+          args: -c "trivy sbom --severity CRITICAL,HIGH --format table -o trivy-report.json ./bom.json"
 
       - uses: actions/download-artifact@v3
         with:
           name: bom.json
-
-      - name: Run Trivy with SBOM
-        run: trivy sbom --severity CRITICAL,HIGH --format table -o trivy-report.json ./bom.json
 
       - name: Display in the console
         run: |
