@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: empayre/action-jdk-build
-          ref: bumpActions
+          ref: v1.0.22
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
 
