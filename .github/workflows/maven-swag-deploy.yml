@@ -34,12 +34,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: npm
@@ -55,7 +55,7 @@ jobs:
 
       - name: Cache build
         id: cache-build
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             web_deploy
@@ -66,18 +66,18 @@ jobs:
     needs: [build]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Setup Maven
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ inputs.jdk-version }}
           distribution: ${{ inputs.jdk-distribution }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: npm
@@ -90,7 +90,7 @@ jobs:
 
       - name: Cache build
         id: cache-build
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             web_deploy
@@ -116,18 +116,18 @@ jobs:
     needs: [ build ]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Setup Maven
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ inputs.jdk-version }}
           distribution: ${{ inputs.jdk-distribution }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: npm
@@ -140,7 +140,7 @@ jobs:
 
       - name: Cache build
         id: cache-build
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             web_deploy
