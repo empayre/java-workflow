@@ -48,7 +48,7 @@ jobs:
           -Drevision="1.${{ steps.commit_info.outputs.COMMIT_NUMBER}}-${{steps.commit_info.outputs.SHA_7 }}"
           clean deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github-token }}
 
       - name: Mattermost Notification
         if: always()
