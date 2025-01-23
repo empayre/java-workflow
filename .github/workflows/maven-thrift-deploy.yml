@@ -1,0 +1,64 @@
+name: Maven Build Artifact
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'Java version'
+        required: false
+        default: "21"
+        type: string
+      java-distribution:
+        description: 'Java distribution'
+        required: false
+        default: "temurin"
+        type: string
+    secrets:
+      mm-webhook-url:
+        required: true
+      github-token:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install thrift
+        uses: valitydev/action-setup-thrift@v0.0.6
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.java-distribution }}
+          cache: 'maven'
+
+      - name: Retrieve commit info
+        run: |
+          echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
+          echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
+        id: commit_info
+
+      - name: Deploy packages
+        if: github.event_name == 'push'
+        run: >
+          mvn -B -Dcommit.number=${{steps.commit_info.outputs.COMMIT_NUMBER}}
+          -Drevision="1.${{ steps.commit_info.outputs.COMMIT_NUMBER}}-${{steps.commit_info.outputs.SHA_7 }}"
+          clean deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+
+  notify:
+    runs-on: ubuntu-20.04
+    needs: [ deploy ]
+    steps:
+      - name: Mattermost Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_USERNAME: ${{ github.event.repository.name }}
+          SLACK_WEBHOOK: ${{ secrets.mm-webhook-url }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_LINK_NAMES: true
+          SLACK_FOOTER: ""
