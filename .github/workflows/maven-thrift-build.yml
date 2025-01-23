@@ -29,12 +29,6 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
 
-      - name: Setup directories
-        run: |
-          BASE_DIR=/var/opt/cprocsp
-          sudo mkdir -p $BASE_DIR/tmp
-          sudo chmod a+rwx $BASE_DIR/tmp
-
       - name: Retrieve commit info
         run: |
           echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"

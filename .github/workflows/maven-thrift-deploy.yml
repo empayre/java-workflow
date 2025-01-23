@@ -15,7 +15,7 @@ on:
         type: string
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-20.04
     steps:
       - name: Install thrift
@@ -28,12 +28,6 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
-
-      - name: Setup directories
-        run: |
-          BASE_DIR=/var/opt/cprocsp
-          sudo mkdir -p $BASE_DIR/tmp
-          sudo chmod a+rwx $BASE_DIR/tmp
 
       - name: Retrieve commit info
         run: |
@@ -50,6 +44,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.github-token }}
 
+  notify:
+    runs-on: ubuntu-20.04
+    needs: [ deploy ]
+    steps:
       - name: Mattermost Notification
         if: always()
         uses: rtCamp/action-slack-notify@v2.2.0
