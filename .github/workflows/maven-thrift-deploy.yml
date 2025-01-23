@@ -13,6 +13,11 @@ on:
         required: false
         default: "temurin"
         type: string
+    secrets:
+      mm-webhook-url:
+        required: true
+      github-token:
+        required: true
 
 jobs:
   deploy:
