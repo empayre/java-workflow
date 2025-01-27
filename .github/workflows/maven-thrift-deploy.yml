@@ -41,7 +41,6 @@ jobs:
         id: commit_info
 
       - name: Deploy packages
-        if: github.event_name == 'push'
         run: >
           mvn -B -Dcommit.number=${{steps.commit_info.outputs.COMMIT_NUMBER}}
           -Drevision="1.${{ steps.commit_info.outputs.COMMIT_NUMBER}}-${{steps.commit_info.outputs.SHA_7 }}"
