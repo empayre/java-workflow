@@ -41,6 +41,8 @@ jobs:
           ref: v1.0.22
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Run Build Java
         uses: ./.github/actions/action-jdk-build
