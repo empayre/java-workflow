@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Checkout GitHub Action JDK Build Repo
-        uses: @v4
+        uses: actions/checkout@v4
         with:
           repository: empayre/action-jdk-build
           ref: v1.0.18
