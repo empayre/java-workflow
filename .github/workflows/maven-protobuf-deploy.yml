@@ -19,7 +19,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -53,7 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   notify:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [deploy]
     steps:
       - name: Mattermost Notification

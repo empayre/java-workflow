@@ -31,7 +31,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -62,7 +62,7 @@ jobs:
           key: ${{ runner.os }}-web-${{ github.sha }}
 
   deploy-server:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [build]
     steps:
       - name: Checkout Repo
@@ -112,7 +112,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github-token }}
 
   deploy-client:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [ build ]
     steps:
       - name: Checkout Repo
@@ -162,7 +162,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   success-notify:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [deploy-server, deploy-client]
     if: success()
     steps:
@@ -176,7 +176,7 @@ jobs:
           SLACK_FOOTER: ""
 
   fail-notify:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [deploy-server, deploy-client]
     if: failure()
     steps:
