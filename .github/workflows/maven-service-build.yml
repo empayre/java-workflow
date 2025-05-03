@@ -52,11 +52,11 @@ jobs:
           mvn-args: ${{ inputs.mvn-args }}
           jdk-version: ${{ inputs.java-version }}
           jdk-distribution: ${{ inputs.java-distribution }}
+
   scan:
     name: Vulnerabilities
     needs: build
     runs-on: ubuntu-22.04
-
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4

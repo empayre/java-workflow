@@ -29,14 +29,17 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
+
       - name: Set up buf action
         uses: bufbuild/buf-setup-action@v1.11.0
         with:
           version: 1.11.0
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Running linter
         run: |
           buf lint
+
       - name: Compile
         run: >
           mvn --batch-mode clean compile -f pom.xml

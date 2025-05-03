@@ -32,27 +32,33 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
+
       - name: Set up buf action
         uses: bufbuild/buf-setup-action@v1.11.0
         with:
           version: 1.11.0
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Running linter
         run: |
           buf lint
+
       - name: Retrieve commit info
         run: |
           echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
           echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
         id: commit_info
+
       - name: Set artifact version
         run: |
           mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }}"
+
       - name: Deploy artifact
         run: |
           mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   notify:
     runs-on: ubuntu-22.04
     needs: [deploy]
