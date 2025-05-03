@@ -26,6 +26,8 @@ on:
         required: true
       mm-sa-wh-url:
         required: true
+      maven-server-read-ids:
+        required: false
 
 jobs:
   build:
@@ -53,6 +55,7 @@ jobs:
           mvn-args: ${{ inputs.mvn-args }}
           jdk-version: ${{ inputs.java-version }}
           jdk-distribution: ${{ inputs.java-distribution }}
+          maven-server-read-ids: ${{ inputs.maven-server-read-ids }}
 
   scan:
     name: Vulnerabilities

@@ -40,6 +40,7 @@ jobs:
           cache: 'maven'
 
       - name: Generate Maven settings.xml
+        shell: bash
         run: bash ./scripts/generate-settings.sh
         env:
           GITHUB_TOKEN: ${{ github.token }}
