@@ -18,6 +18,8 @@ on:
         required: true
       github-pkg-ro-pat:
         required: true
+      maven-server-read-ids:
+        required: false
 
 jobs:
   build:
@@ -35,23 +37,20 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
 
-      - name: Set up Maven Settings
-        uses: s4u/maven-settings-action@v3.1.0
-        with:
-          servers: |
-            [
-              {
-                "id": "github-read",
-                "username": "${{ secrets.github-pkg-ro-user }}",
-                "password": "${{ secrets.github-pkg-ro-pat }}"
-              }
-            ]
+      - name: Generate Maven settings.xml
+        run: bash ./scripts/generate-settings.sh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_PKG_RO_USER: ${{ secrets.github-pkg-ro-user }}
+          GITHUB_PKG_RO_PAT: ${{ secrets.github-pkg-ro-pat }}
+          MAVEN_SERVER_READ_IDS: ${{ secrets.maven-server-read-ids }}
 
       - name: Cache local Maven repository
         id: mvn-cache
         uses: actions/cache@v4
         with:
-          path: ~/.m2/repository
+          path: ${{ env.HOME }}/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
