@@ -32,11 +32,5 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
 
-      - name: Retrieve commit info
-        run: |
-          echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
-          echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
-        id: commit_info
-
       - name: Build packages
         run: mvn -B clean verify

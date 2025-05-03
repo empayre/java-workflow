@@ -98,19 +98,27 @@ jobs:
             web_deploy
           key: ${{ runner.os }}-web-${{ github.sha }}
 
-      - name: Retrieve commit info
-        run: |
-          echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
-          echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
-        id: commit_info
+      - name: Extract mvn project info
+        id: info
+        uses: ./.github/actions/mvn-project-info
 
-      - name: Set artifact version
-        run: |
-          mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }}-server"
-      - name: Deploy server package
-        run: |
-          mvn --batch-mode deploy -P="server"
+      - name: Delete SNAPSHOT versions with branch suffix
+        if: env.BRANCH_SUFFIX != ''
+        uses: actions/github-script@v7
         env:
+          PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+          REPOSITORY_OWNER: ${{ env.REPOSITORY_OWNER }}
+          BRANCH_SUFFIX: ${{ env.BRANCH_SUFFIX }}
+        with:
+          script: |
+            const fn = require('./scripts/deleteSnapshots.js');
+            await fn({ github, core });
+
+      - name: Deploy artifact
+        run: |
+          mvn -B clean deploy -Drevision=${{ env.REVISION }}-server -P="server"
+        env:
+          REVISION: ${{ env.REVISION }}
           GITHUB_TOKEN: ${{ secrets.github-token }}
 
   deploy-client:
@@ -149,20 +157,28 @@ jobs:
             web_deploy
           key: ${{ runner.os }}-web-${{ github.sha }}
 
-      - name: Retrieve commit info
-        run: |
-          echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
-          echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
-        id: commit_info
+      - name: Extract mvn project info
+        id: info
+        uses: ./.github/actions/mvn-project-info
 
-      - name: Set artifact version
-        run: |
-          mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }}-client"
-      - name: Deploy client package
-        run: |
-          mvn --batch-mode deploy -P="client"
+      - name: Delete SNAPSHOT versions with branch suffix
+        if: env.BRANCH_SUFFIX != ''
+        uses: actions/github-script@v7
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+          REPOSITORY_OWNER: ${{ env.REPOSITORY_OWNER }}
+          BRANCH_SUFFIX: ${{ env.BRANCH_SUFFIX }}
+        with:
+          script: |
+            const fn = require('./scripts/deleteSnapshots.js');
+            await fn({ github, core });
+
+      - name: Deploy artifact
+        run: |
+          mvn -B clean deploy -Drevision=${{ env.REVISION }}-client -P="client"
+        env:
+          REVISION: ${{ env.REVISION }}
+          GITHUB_TOKEN: ${{ secrets.github-token }}
 
   success-notify:
     runs-on: ubuntu-22.04

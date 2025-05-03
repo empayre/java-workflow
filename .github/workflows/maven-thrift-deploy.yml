@@ -37,18 +37,27 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
 
-      - name: Retrieve commit info
-        run: |
-          echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
-          echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
-        id: commit_info
+      - name: Extract mvn project info
+        id: info
+        uses: ./.github/actions/mvn-project-info
 
-      - name: Deploy packages
-        run: >
-          mvn -B -Dcommit.number=${{steps.commit_info.outputs.COMMIT_NUMBER}}
-          -Drevision="1.${{ steps.commit_info.outputs.COMMIT_NUMBER}}-${{steps.commit_info.outputs.SHA_7 }}"
-          clean deploy
+      - name: Delete SNAPSHOT versions with branch suffix
+        if: env.BRANCH_SUFFIX != ''
+        uses: actions/github-script@v7
         env:
+          PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+          REPOSITORY_OWNER: ${{ env.REPOSITORY_OWNER }}
+          BRANCH_SUFFIX: ${{ env.BRANCH_SUFFIX }}
+        with:
+          script: |
+            const fn = require('./scripts/deleteSnapshots.js');
+            await fn({ github, core });
+
+      - name: Deploy artifact
+        run: |
+          mvn -B clean deploy -Drevision=${{ env.REVISION }}
+        env:
+          REVISION: ${{ env.REVISION }}
           GITHUB_TOKEN: ${{ secrets.github-token }}
 
   notify:
