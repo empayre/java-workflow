@@ -1,0 +1,46 @@
+name: Maven Build Artifact
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'Java version'
+        required: false
+        default: "21"
+        type: string
+      java-distribution:
+        description: 'Java distribution'
+        required: false
+        default: "temurin"
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.java-distribution }}
+          cache: 'maven'
+
+      - name: Set up Maven Settings for deploy
+        uses: s4u/maven-settings-action@v3.1.0
+
+      - name: Cache local Maven repository
+        id: mvn-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build packages
+        run: mvn -B clean verify
