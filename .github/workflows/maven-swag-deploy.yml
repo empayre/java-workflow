@@ -1,4 +1,4 @@
-name: Deploy Artifact
+name: Deploy Artifacts
 
 on:
   workflow_call:

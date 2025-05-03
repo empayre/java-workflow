@@ -1,4 +1,4 @@
-name: Maven Build Artifact
+name: Maven Deploy Artifact
 
 on:
   workflow_call:

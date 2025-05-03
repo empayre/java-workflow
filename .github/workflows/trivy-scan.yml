@@ -1,4 +1,4 @@
-name: Trivy
+name: Run Trivy
 
 on:
   workflow_call:
