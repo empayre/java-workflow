@@ -37,7 +37,7 @@ jobs:
         uses: bufbuild/buf-setup-action@v1.11.0
         with:
           version: 1.11.0
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
 
       - name: Running linter
         run: |
@@ -48,13 +48,12 @@ jobs:
         uses: ./.github/actions/mvn-project-info
 
       - name: Delete SNAPSHOT versions with branch suffix
-        if: env.BRANCH_SUFFIX != ''
         uses: actions/github-script@v7
         env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
           PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
           REPOSITORY_OWNER: ${{ env.REPOSITORY_OWNER }}
           BRANCH_SUFFIX: ${{ env.BRANCH_SUFFIX }}
+          CURRENT_BRANCH: ${{ github.ref_name }}
         with:
           script: |
             const fn = require('./scripts/deleteSnapshots.js');
@@ -64,7 +63,8 @@ jobs:
         run: |
           mvn -B clean deploy -Drevision=${{ env.REVISION }}
         env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
           REVISION: ${{ env.REVISION }}
 
   notify:

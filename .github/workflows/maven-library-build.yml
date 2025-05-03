@@ -13,6 +13,11 @@ on:
         required: false
         default: "temurin"
         type: string
+    secrets:
+      github-pkg-ro-user:
+        required: true
+      github-pkg-ro-pat:
+        required: true
 
 jobs:
   build:
@@ -26,12 +31,21 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ inputs.java-version }}
-          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: 'maven'
 
-      - name: Set up Maven Settings for deploy
+      - name: Set up Maven Settings
         uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: |
+            [
+              {
+                "id": "github-read",
+                "username": "${{ secrets.github-pkg-ro-user }}",
+                "password": "${{ secrets.github-pkg-ro-pat }}"
+              }
+            ]
 
       - name: Cache local Maven repository
         id: mvn-cache

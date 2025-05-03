@@ -16,7 +16,9 @@ on:
     secrets:
       mm-webhook-url:
         required: true
-      github-token:
+      github-pkg-ro-user:
+        required: true
+      github-pkg-ro-pat:
         required: true
 
 jobs:
@@ -35,8 +37,17 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
 
-      - name: Set up Maven Settings for deploy
+      - name: Set up Maven Settings
         uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: |
+            [
+              {
+                "id": "github-read",
+                "username": "${{ secrets.github-pkg-ro-user }}",
+                "password": "${{ secrets.github-pkg-ro-pat }}"
+              }
+            ]
 
       - name: Cache local Maven repository
         id: mvn-cache
@@ -52,13 +63,12 @@ jobs:
         uses: ./.github/actions/mvn-project-info
 
       - name: Delete SNAPSHOT versions with branch suffix
-        if: env.BRANCH_SUFFIX != ''
         uses: actions/github-script@v7
         env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
           PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
           REPOSITORY_OWNER: ${{ env.REPOSITORY_OWNER }}
           BRANCH_SUFFIX: ${{ env.BRANCH_SUFFIX }}
+          CURRENT_BRANCH: ${{ github.ref_name }}
         with:
           script: |
             const fn = require('./scripts/deleteSnapshots.js');
@@ -68,7 +78,8 @@ jobs:
         run: |
           mvn -B clean deploy -Drevision=${{ env.REVISION }}
         env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
           REVISION: ${{ env.REVISION }}
 
   notify:
