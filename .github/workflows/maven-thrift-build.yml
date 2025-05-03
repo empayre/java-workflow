@@ -20,8 +20,11 @@ jobs:
     steps:
       - name: Install thrift
         uses: valitydev/action-setup-thrift@v0.0.6
+
       - name: Checkout the repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-java@v4
         with:
