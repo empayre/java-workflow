@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: empayre/action-jdk-build
-          #          todo bump
+          # todo bump
           ref: v1.0.22
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
@@ -55,7 +55,7 @@ jobs:
           mvn-args: ${{ inputs.mvn-args }}
           jdk-version: ${{ inputs.java-version }}
           jdk-distribution: ${{ inputs.java-distribution }}
-          maven-server-read-ids: ${{ inputs.maven-server-read-ids }}
+          maven-server-read-ids: ${{ secrets.maven-server-read-ids }}
 
   scan:
     name: Vulnerabilities

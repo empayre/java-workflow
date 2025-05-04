@@ -5,7 +5,6 @@ set -euo pipefail
 mkdir -p "$HOME/.m2"
 SETTINGS_FILE="$HOME/.m2/settings.xml"
 
-# Start settings.xml
 cat > "$SETTINGS_FILE" <<EOF
 <settings>
   <interactiveMode>false</interactiveMode>
@@ -30,7 +29,6 @@ EOF
   done
 fi
 
-# Finish file
 cat >> "$SETTINGS_FILE" <<EOF
   </servers>
   <mirrors/>
