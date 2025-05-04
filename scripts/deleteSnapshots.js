@@ -5,7 +5,7 @@ module.exports = async ({ github, core }) => {
   const branchSuffix = process.env.BRANCH_SUFFIX;
   const currentBranch = process.env.CURRENT_BRANCH;
 
-  const isMain = currentBranch === 'main' || currentBranch === 'master';
+  const isMain = currentBranch === 'main' || currentBranch === 'master' || /^v\d+$/.test(currentBranch);
 
   try {
     const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
