@@ -11,25 +11,9 @@ cat > "$SETTINGS_FILE" <<EOF
   <servers>
     <server>
       <id>github</id>
-      <username>${GITHUB_ACTOR}</username>
-      <password>${GITHUB_TOKEN}</password>
+      <username>${GITHUB_USER}</username>
+      <password>${GITHUB_PAT}</password>
     </server>
-EOF
-
-if [[ -n "${MAVEN_SERVER_READ_IDS:-}" ]]; then
-  IFS=',' read -ra IDS <<< "$MAVEN_SERVER_READ_IDS"
-  for id in "${IDS[@]}"; do
-    cat >> "$SETTINGS_FILE" <<EOF
-    <server>
-      <id>${id}</id>
-      <username>${GITHUB_PKG_RO_USER}</username>
-      <password>${GITHUB_PKG_RO_PAT}</password>
-    </server>
-EOF
-  done
-fi
-
-cat >> "$SETTINGS_FILE" <<EOF
   </servers>
   <mirrors/>
   <proxies/>

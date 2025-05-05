@@ -16,12 +16,10 @@ on:
     secrets:
       mm-webhook-url:
         required: true
-      github-pkg-ro-user:
+      github-user:
         required: true
-      github-pkg-ro-pat:
+      github-pat:
         required: true
-      maven-server-read-ids:
-        required: false
 
 jobs:
   deploy:
@@ -43,11 +41,8 @@ jobs:
         shell: bash
         run: bash ./scripts/generate-settings.sh
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_PKG_RO_USER: ${{ secrets.github-pkg-ro-user }}
-          GITHUB_PKG_RO_PAT: ${{ secrets.github-pkg-ro-pat }}
-          MAVEN_SERVER_READ_IDS: ${{ secrets.maven-server-read-ids }}
+          GITHUB_USER: ${{ secrets.github-user }}
+          GITHUB_PAT: ${{ secrets.github-pat }}
 
       - name: Cache local Maven repository
         id: mvn-cache
