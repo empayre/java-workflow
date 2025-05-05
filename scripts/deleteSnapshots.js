@@ -18,7 +18,12 @@ module.exports = async ({ github, core }) => {
 
     if (isMain) {
       core.info(`Current branch is '${currentBranch}'. Will delete all non-main versions.`);
-      toDelete = versions.data.filter(v => v.name.includes('-') && v.name.split('-').length > 2);
+      toDelete = versions.data.filter(v => {
+        const name = v.name;
+        const hasMultipleDashes = name.includes('-') && name.split('-').length > 2;
+        const endsWithVersionTag = /-v\d+$/.test(name);
+        return hasMultipleDashes && !endsWithVersionTag;
+      });
     } else if (branchSuffix) {
       core.info(`Branch suffix is '${branchSuffix}'. Will delete only matching versions.`);
       toDelete = versions.data.filter(v => v.name.includes(branchSuffix));
