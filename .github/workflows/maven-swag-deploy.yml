@@ -116,11 +116,12 @@ jobs:
 
       - name: Deploy artifact
         run: |
-          mvn -B clean deploy -Drevision=${{ env.REVISION }}-server -P="server"
+          mvn -B clean deploy -Drevision=${{ env.REVISION }}-server -Dcommit.number=${{ env.COMMIT_NUMBER }} -P="server"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
           REVISION: ${{ env.REVISION }}
+          COMMIT_NUMBER: ${{ env.COMMIT_NUMBER }}
 
   deploy-client:
     runs-on: ubuntu-latest
@@ -176,11 +177,12 @@ jobs:
 
       - name: Deploy artifact
         run: |
-          mvn -B clean deploy -Drevision=${{ env.REVISION }}-client -P="client"
+          mvn -B clean deploy -Drevision=${{ env.REVISION }}-client -Dcommit.number=${{ env.COMMIT_NUMBER }} -P="client"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
           REVISION: ${{ env.REVISION }}
+          COMMIT_NUMBER: ${{ env.COMMIT_NUMBER }}
 
   success-notify:
     runs-on: ubuntu-latest

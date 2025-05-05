@@ -76,11 +76,12 @@ jobs:
 
       - name: Deploy artifact
         run: |
-          mvn -B clean deploy -Drevision=${{ env.REVISION }}
+          mvn -B clean deploy -Drevision=${{ env.REVISION }} -Dcommit.number=${{ env.COMMIT_NUMBER }}
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
           REVISION: ${{ env.REVISION }}
+          COMMIT_NUMBER: ${{ env.COMMIT_NUMBER }}
 
   notify:
     runs-on: ubuntu-latest
