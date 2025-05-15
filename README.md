@@ -26,11 +26,11 @@ on:
 
 jobs:
   build:
-    uses: empayre/java-workflow/.github/workflows/maven-service-build.yml@v1
+    uses: empayre/java-workflow/.github/workflows/maven-service-build.yml@v${version}
     secrets:
       action-fetch-token: ${{ secrets.ACTIONS_FETCH_TOKEN }}
-      github-pkg-ro-pat: ${{ secrets.GH_PACKAGES_RO_PAT2 }}
-      github-pkg-ro-user: 'empayre-bot'
+      github-pat: ${{ secrets.GH_PACKAGES_JDKBUILD_PAT }}
+      github-user: 'empayre-bot'
 ```
 `deploy.yml`
 ```yaml
@@ -44,12 +44,12 @@ on:
 
 jobs:
   deploy:
-    uses: empayre/java-workflow/.github/workflows/maven-service-deploy.yml@v1
+    uses: empayre/java-workflow/.github/workflows/maven-service-deploy.yml@v${version}
     secrets:
       action-fetch-token: ${{ secrets.ACTIONS_FETCH_TOKEN }}
       mm-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
-      github-pkg-ro-pat: ${{ secrets.GH_PACKAGES_RO_PAT2 }}
-      github-pkg-ro-user: 'empayre-bot'
+      github-pat: ${{ secrets.GH_PACKAGES_JDKBUILD_PAT }}
+      github-user: 'empayre-bot'
       aws-ecr-access_key: ${{ secrets.ECR_ACCESS_KEY }}
       aws-ecr-secret-key: ${{ secrets.ECR_SECRET_KEYS }}
       aws-region: ${{ secrets.AWS_REGION }}

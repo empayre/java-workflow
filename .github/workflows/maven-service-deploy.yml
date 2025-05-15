@@ -23,9 +23,9 @@ on:
         required: true
       action-fetch-token:
         required: true
-      github-pkg-ro-pat:
+      github-user:
         required: true
-      github-pkg-ro-user:
+      github-pat:
         required: true
       aws-ecr-access_key:
         required: true
@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: empayre/action-jdk-build
-          ref: v1.0.22
+          ref: v1.0.23
           token: ${{ secrets.action-fetch-token }}
           path: .github/actions/action-jdk-build
           fetch-depth: 0
@@ -62,8 +62,8 @@ jobs:
       - name: Run Build Java
         uses: ./.github/actions/action-jdk-build
         with:
-          github-pat: ${{ secrets.github-pkg-ro-pat }}
-          github-user: ${{ secrets.github-pkg-ro-user }}
+          github-pat: ${{ secrets.github-user }}
+          github-user: ${{ secrets.github-pat }}
           mvn-args: ${{ inputs.mvn-args }}
           jdk-version: ${{ inputs.java-version }}
           jdk-distribution: ${{ inputs.java-distribution }}

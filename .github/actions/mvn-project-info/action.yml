@@ -1,0 +1,36 @@
+name: Extract Maven Project Info
+description: Extracts Maven groupId, package name, and Git metadata
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        if [[ "$GITHUB_REF_NAME" != "master" && "$GITHUB_REF_NAME" != "main" ]]; then
+          SAFE_BRANCH_NAME=$(echo "$GITHUB_REF_NAME" | tr '/' '-')
+          SAFE_BRANCH_NAME=$(echo "$SAFE_BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]//g')
+          BRANCH_SUFFIX="-$SAFE_BRANCH_NAME"
+        else
+          BRANCH_SUFFIX=""
+        fi
+        echo "BRANCH_SUFFIX=$BRANCH_SUFFIX" >> $GITHUB_ENV
+        
+        REPOSITORY_OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+        echo "REPOSITORY_OWNER=$REPOSITORY_OWNER" >> $GITHUB_ENV
+        
+        REPOSITORY_NAME="${GITHUB_REPOSITORY#*/}"
+        echo "REPOSITORY_NAME=$REPOSITORY_NAME" >> $GITHUB_ENV
+        
+        GROUP_ID=$(mvn help:evaluate -Dexpression=project.groupId -q -DforceStdout)
+        echo "GROUP_ID=$GROUP_ID" >> $GITHUB_ENV
+        
+        PACKAGE_NAME="${GROUP_ID}.${REPOSITORY_NAME}"
+        echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+        
+        COMMIT_NUMBER=$(git rev-list HEAD --count)
+        echo "COMMIT_NUMBER=$COMMIT_NUMBER" >> $GITHUB_ENV
+        
+        SHA_7=${GITHUB_SHA::7}
+        echo "SHA_7=$SHA_7" >> $GITHUB_ENV
+        
+        REVISION="1.${COMMIT_NUMBER}-${SHA_7}${BRANCH_SUFFIX}"
+        echo "REVISION=$REVISION" >> $GITHUB_ENV

@@ -1,4 +1,4 @@
-name: Deploy Artifact
+name: Deploy Artifacts
 
 on:
   workflow_call:
@@ -36,6 +36,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
 
       - name: Setup Node.js
@@ -68,6 +69,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
 
       - name: Setup Maven
@@ -96,28 +98,27 @@ jobs:
             web_deploy
           key: ${{ runner.os }}-web-${{ github.sha }}
 
-      - name: Retrieve commit info
-        run: |
-          echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
-          echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
-        id: commit_info
+      - name: Extract mvn project info
+        id: info
+        uses: ./.github/actions/mvn-project-info
 
-      - name: Set artifact version
+      - name: Deploy artifact
         run: |
-          mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }}-server"
-      - name: Deploy server package
-        run: |
-          mvn --batch-mode deploy -P="server"
+          mvn -B clean deploy -Drevision=${{ env.REVISION }}-server -Dcommit.number=${{ env.COMMIT_NUMBER }} -P="server"
         env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+          REVISION: ${{ env.REVISION }}
+          COMMIT_NUMBER: ${{ env.COMMIT_NUMBER }}
 
   deploy-client:
     runs-on: ubuntu-22.04
-    needs: [ build ]
+    needs: [build]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
 
       - name: Setup Maven
@@ -146,20 +147,18 @@ jobs:
             web_deploy
           key: ${{ runner.os }}-web-${{ github.sha }}
 
-      - name: Retrieve commit info
-        run: |
-          echo "::set-output name=COMMIT_NUMBER::$(git rev-list HEAD --count)"
-          echo "::set-output name=SHA_7::${GITHUB_SHA::7}"
-        id: commit_info
+      - name: Extract mvn project info
+        id: info
+        uses: ./.github/actions/mvn-project-info
 
-      - name: Set artifact version
+      - name: Deploy artifact
         run: |
-          mvn versions:set versions:commit -DnewVersion="1.${{ steps.commit_info.outputs.COMMIT_NUMBER }}-${{ steps.commit_info.outputs.SHA_7 }}-client"
-      - name: Deploy client package
-        run: |
-          mvn --batch-mode deploy -P="client"
+          mvn -B clean deploy -Drevision=${{ env.REVISION }}-client -Dcommit.number=${{ env.COMMIT_NUMBER }} -P="client"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+          REVISION: ${{ env.REVISION }}
+          COMMIT_NUMBER: ${{ env.COMMIT_NUMBER }}
 
   success-notify:
     runs-on: ubuntu-22.04

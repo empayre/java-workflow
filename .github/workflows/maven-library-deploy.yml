@@ -16,27 +16,42 @@ on:
     secrets:
       mm-webhook-url:
         required: true
-      github-token:
+      github-user:
+        required: true
+      github-pat:
         required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-22.04
     steps:
-      - name: Install thrift
-        uses: valitydev/action-setup-thrift@v1.0.6
-
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Maven
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.java-distribution }}
           cache: 'maven'
+
+      - name: Generate Maven settings.xml
+        shell: bash
+        run: bash ./scripts/generate-settings.sh
+        env:
+          GITHUB_USER: ${{ secrets.github-user }}
+          GITHUB_PAT: ${{ secrets.github-pat }}
+
+      - name: Cache local Maven repository
+        id: mvn-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.HOME }}/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: Extract mvn project info
         id: info
@@ -44,7 +59,7 @@ jobs:
 
       - name: Deploy artifact
         run: |
-          mvn -B clean deploy -Drevision=${{ env.REVISION }} -Dcommit.number=${{ env.COMMIT_NUMBER }}
+          mvn -B clean deploy
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}

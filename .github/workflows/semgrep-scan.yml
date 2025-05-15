@@ -7,7 +7,7 @@ on:
 
 jobs:
   semgrep:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     container:
       image: returntocorp/semgrep:1.78.0
 
@@ -67,7 +67,7 @@ jobs:
         if: env.found == 'true'
         uses: actions/github-script@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
           script: |
             const fs = require('fs');
             const semgrepResults = fs.readFileSync('findings.json', 'utf8');
