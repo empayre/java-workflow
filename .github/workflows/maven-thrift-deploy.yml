@@ -42,18 +42,6 @@ jobs:
         id: info
         uses: ./.github/actions/mvn-project-info
 
-      - name: Delete SNAPSHOT versions with branch suffix
-        uses: actions/github-script@v7
-        env:
-          PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
-          REPOSITORY_OWNER: ${{ env.REPOSITORY_OWNER }}
-          BRANCH_SUFFIX: ${{ env.BRANCH_SUFFIX }}
-          CURRENT_BRANCH: ${{ github.ref_name }}
-        with:
-          script: |
-            const fn = require('./scripts/deleteSnapshots.js');
-            await fn({ github, core });
-
       - name: Deploy artifact
         run: |
           mvn -B clean deploy -Drevision=${{ env.REVISION }} -Dcommit.number=${{ env.COMMIT_NUMBER }}
