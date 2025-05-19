@@ -37,7 +37,7 @@ jobs:
 
       - name: Generate Maven settings.xml
         shell: bash
-        run: bash ./scripts/generate-settings.sh
+        run: bash ./.github/scripts/generate-settings.sh
         env:
           GITHUB_USER: ${{ secrets.github-user }}
           GITHUB_PAT: ${{ secrets.github-pat }}
