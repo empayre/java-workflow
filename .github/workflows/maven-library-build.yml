@@ -36,8 +36,7 @@ jobs:
           cache: 'maven'
 
       - name: Generate Maven settings.xml
-        shell: bash
-        run: bash ./.github/scripts/generate-settings.sh
+        uses: empayre/java-workflow/.github/actions/m2-settings@v5
         env:
           GITHUB_USER: ${{ secrets.github-user }}
           GITHUB_PAT: ${{ secrets.github-pat }}
