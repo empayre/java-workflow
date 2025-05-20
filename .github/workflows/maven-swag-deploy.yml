@@ -100,7 +100,7 @@ jobs:
 
       - name: Extract mvn project info
         id: info
-        uses: ./.github/actions/mvn-project-info
+        uses: empayre/java-workflow/.github/actions/mvn-project-info@v5
 
       - name: Deploy artifact
         run: |
@@ -149,7 +149,7 @@ jobs:
 
       - name: Extract mvn project info
         id: info
-        uses: ./.github/actions/mvn-project-info
+        uses: empayre/java-workflow/.github/actions/mvn-project-info@v5
 
       - name: Deploy artifact
         run: |

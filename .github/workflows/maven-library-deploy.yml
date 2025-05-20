@@ -38,8 +38,7 @@ jobs:
           cache: 'maven'
 
       - name: Generate Maven settings.xml
-        shell: bash
-        run: bash ./.github/scripts/generate-settings.sh
+        uses: empayre/java-workflow/.github/actions/m2-settings@v5
         env:
           GITHUB_USER: ${{ secrets.github-user }}
           GITHUB_PAT: ${{ secrets.github-pat }}
@@ -55,7 +54,7 @@ jobs:
 
       - name: Extract mvn project info
         id: info
-        uses: ./.github/actions/mvn-project-info
+        uses: empayre/java-workflow/.github/actions/mvn-project-info@v5
 
       - name: Deploy artifact
         run: |
@@ -63,8 +62,6 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
-          REVISION: ${{ env.REVISION }}
-          COMMIT_NUMBER: ${{ env.COMMIT_NUMBER }}
 
   notify:
     runs-on: ubuntu-22.04

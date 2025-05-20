@@ -1,0 +1,27 @@
+name: Generate Maven settings.xml
+description: Generate Maven settings.xml
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        set -euo pipefail
+        
+        mkdir -p "$HOME/.m2"
+        SETTINGS_FILE="$HOME/.m2/settings.xml"
+        
+        cat > "$SETTINGS_FILE" <<EOF
+        <settings>
+          <interactiveMode>false</interactiveMode>
+          <servers>
+            <server>
+              <id>github</id>
+              <username>${GITHUB_USER}</username>
+              <password>${GITHUB_PAT}</password>
+            </server>
+          </servers>
+          <mirrors/>
+          <proxies/>
+          <profiles/>
+        </settings>
+        EOF
