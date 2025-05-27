@@ -1,0 +1,18 @@
+name: Run SAST Tools
+
+on:
+  workflow_call:
+    secrets:
+      mm-sa-wh-url:
+        required: true
+
+jobs:
+  semgrep:
+    uses: .github/workflows/semgrep-scan.yml
+    secrets:
+      mm-sa-wh-url: ${{ secrets.mm-sa-wh-url }}
+
+  codeql:
+    uses: .github/workflows/codeql-scan.yml
+    secrets:
+      mm-sa-wh-url: ${{ secrets.mm-sa-wh-url }}
