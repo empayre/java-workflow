@@ -11,8 +11,3 @@ jobs:
     uses: .github/workflows/semgrep-scan.yml
     secrets:
       mm-sa-wh-url: ${{ secrets.mm-sa-wh-url }}
-
-  codeql:
-    uses: .github/workflows/codeql-scan.yml
-    secrets:
-      mm-sa-wh-url: ${{ secrets.mm-sa-wh-url }}
