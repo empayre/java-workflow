@@ -62,8 +62,8 @@ jobs:
       - name: Run Build Java
         uses: ./.github/actions/action-jdk-build
         with:
-          github-pat: ${{ secrets.github-user }}
-          github-user: ${{ secrets.github-pat }}
+          github-pat: ${{ secrets.github-pat }}
+          github-user: ${{ secrets.github-user }}
           mvn-args: ${{ inputs.mvn-args }}
           jdk-version: ${{ inputs.java-version }}
           jdk-distribution: ${{ inputs.java-distribution }}
