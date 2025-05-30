@@ -1,0 +1,13 @@
+name: Run SAST Tools
+
+on:
+  workflow_call:
+    secrets:
+      mm-sa-wh-url:
+        required: true
+
+jobs:
+  semgrep:
+    uses: empayre/java-workflow/.github/workflows/semgrep-scan.yml@newStaticAndScanDep
+    secrets:
+      mm-sa-wh-url: ${{ secrets.mm-sa-wh-url }}
