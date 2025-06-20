@@ -8,6 +8,7 @@ on:
 
 jobs:
   semgrep:
-    uses: empayre/java-workflow/.github/workflows/semgrep-scan.yml@newStaticAndScanDep
+    # uses: empayre/java-workflow/.github/workflows/semgrep-scan.yml@newStaticAndScanDep
+    uses: .github/workflows/sast-tools/semgrep-scan.yml
     secrets:
       mm-sa-wh-url: ${{ secrets.mm-sa-wh-url }}
