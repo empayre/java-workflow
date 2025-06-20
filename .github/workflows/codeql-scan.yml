@@ -1,0 +1,38 @@
+name: Run CodeQL
+on:
+  workflow_call:
+    secrets:
+      mm-sa-wh-url:
+        required: true
+
+jobs:
+  codeql:
+    name: CodeQL Scan
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        language: ['java']
+        build-mode: ['none']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Init CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          output: codeql-results.sarif
+
+      - name: Upload SARIF
+        uses: actions/upload-artifact@v4
+        with:
+            name: codeql-results
+            path: codeql-results.sarif
+    
